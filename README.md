@@ -1,4 +1,5 @@
 [![Build Status](https://travis-ci.org/Dave-mash/Questioner-api.svg?branch=develop)](https://travis-ci.org/Dave-mash/Questioner-api)
+[![Coverage Status](https://coveralls.io/repos/github/Dave-mash/Questioner-api/badge.svg?branch=develop)](https://coveralls.io/github/Dave-mash/Questioner-api?branch=develop)
 # Questioner-api application endpoints
 ## The following are API endpoints enabling one to:
 * Create an account and log in.

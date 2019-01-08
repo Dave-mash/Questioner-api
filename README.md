@@ -1,3 +1,4 @@
+[![Build Status](https://travis-ci.org/Dave-mash/Questioner-api.svg?branch=develop)](https://travis-ci.org/Dave-mash/Questioner-api)
 # Questioner-api application endpoints
 ## The following are API endpoints enabling one to:
 * Create an account and log in.

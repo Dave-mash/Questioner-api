@@ -1,0 +1,145 @@
+"""
+This module tests the user authentication endpoint
+Author: Dave
+"""
+
+import unittest
+import json
+from app import create_app
+
+class TestUser(unittest.TestCase):
+    
+    def setUp(self):
+        """ Initializes app """
+        self.app = create_app()
+        self.app.testing = False
+        self.client = self.app.test_client()
+
+        self.user = {
+            "first_name": "David",
+            "last_name": "Mwangi",
+            "username": "Dave",
+            "email": "dave@gmail.com",
+            "password": "abc123",
+            "confirm_password": "abc123"
+        }
+
+        self.log_user = {
+            "email": self.user['email'],
+            "password": self.user['password']
+        }
+
+    def post_req(self, path='api/v1/auth/signup', data={}):
+        """ This function utilizes the test client to send POST requests """
+        data = data if data else self.user
+        res = self.client.post(
+            path,
+            data=json.dumps(data),
+            content_type='application/json'
+        )
+        return res
+
+    def get_req(self, path):
+        """ This function utilizes the test client to send GET requests """
+        res = self.client.get(path)
+        return res 
+
+    def test_sign_up_user(self):
+        """ Test that an unregistered user can sign up """
+        payload = self.post_req(data=self.user)
+
+        self.assertEqual(payload.status_code, 201) # Created
+        self.assertEqual(self.user['username'], payload.json['username'])
+
+    def test_get_all_users(self):
+        """ Test that all users can be fetched """
+
+        get = self.get_req('/api/v1/users')
+        self.assertEqual(get.status_code, 200)
+        self.assertEqual(get.json['users'], [])
+
+
+    def test_sign_up_user_invalid_input(self):
+        """ Test that registering wit invalid input will throw an error """
+
+        # Invalid email
+        user = self.user
+        user['email'] = 'davegmail.com'
+        payload = self.post_req(data=user)
+        self.assertEqual(payload.status_code, 422) # Unprocessable Entity
+        self.assertEqual(payload.json['Error'], "Invalid email address")
+
+        # Short username
+        user2 = self.user
+        user2['username'] = 'D'
+        payload = self.post_req(data=user2)
+        self.assertEqual(payload.status_code, 422) # Unprocessable Entity
+        self.assertEqual(payload.json['error'], "Invalid Email address")
+
+        # Weak password
+        user3 = self.user
+        user3['password'] = 'ab'
+        payload = self.post_req(data=user3)
+        self.assertEqual(payload.status_code, 422) # Unprocessable Entity
+        self.assertEqual(payload.json['error'], "Invalid Email address")
+
+        # Unmatching passwords
+        user4 = self.user
+        user4['password'] = 'abc123'
+        user4['confirm_password'] = '123'
+        payload = self.post_req(data=user4)
+        self.assertEqual(payload.status_code, 422) # Unprocessable Entity
+        self.assertEqual(payload.json['error'], "Your passwords do not match")
+
+        # Missing field
+        user5 = self.user
+        user5['username'] = ''
+        payload = self.post_req(data=user5)
+        self.assertEqual(payload.status_code, 422) # Unprocessable Entity
+        self.assertEqual(payload.json['error'], "You missed a required field")
+
+    def test_sign_up_user_existing_account(self):
+        """ Test that registering with an already taken username or email, will throw an error """
+
+        self.post_req(data=self.user)
+
+        user = self.user
+        payload = self.post_req(data=user)
+
+        self.assertEqual(payload.status_code, 409) # Conflict
+        self.assertEqual(payload.json['Error'], "This account exists")
+
+        user2 = self.user
+        user2['email'] = "mash@gmail.com"
+        payload = self.post_req(data=user2)
+
+        self.assertEqual(payload.json['Error'], "This username is taken")
+
+        user3 = {}
+        payload = self.post_req(data=user3)
+
+        self.assertEqual(payload.status_code, 400) # Bad request
+
+    def test_log_in_registered_user(self):
+        """ Test that a registered user can log in """
+
+        # sign up
+        self.post_req(data=self.user)
+        
+        payload = self.post_req(data=self.log_user)
+
+        login = self.post_req('/api/v1/auth/login', payload)
+
+        self.assertEqual(login.status_code, 200)
+        self.assertEqual(login.json['Message'], "You have been successfully logged in.")
+
+
+    def tearDown(self):
+        """ This function destroys all objects created during testing """
+        self.app.testing = False
+        self.app = None
+
+
+if __name__ == "__main__":
+    unittest.main()
+

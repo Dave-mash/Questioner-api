@@ -1,5 +1,5 @@
 from flask import Flask
-from .api.v1.views.user_views import version1 as user_v1
+from .api.v1.views.user_views import version1 as user_v1    
 
 def create_app():
     app = Flask(__name__)

@@ -1,6 +1,3 @@
-"""
-This module sets up a user model
-"""
 from werkzeug.security import generate_password_hash
 
 class UserModel:

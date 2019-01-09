@@ -11,7 +11,7 @@ class RegistrationForm:
         self.confirm_password = confirm_password
     
     def data_exists(self):
-        if not self.Fname or not self.Lname or not self.username or not self.email or not self.password or not self.confirm_password:
+        if not self.username or not self.email or not self.password or not self.confirm_password:
             return False
         else:
             return True

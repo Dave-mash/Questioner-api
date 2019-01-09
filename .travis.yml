@@ -5,7 +5,7 @@ install:
   - pip install -r requirements.txt
 
 script:
-  - pyton -m pytest
+  - python -m pytest
 
 after_success:
   - coveralls

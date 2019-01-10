@@ -5,19 +5,19 @@ This module defines all the user endpoints
 from flask import request, jsonify, make_response
 from app.api.v1.utils.validators import RegistrationForm
 from app.api.v1.models.user_model import UserModel
-from .. import version1
+from .. import version1 as v1
 
 user_model = UserModel()
 
 """ This route fetches all users """
-@version1.route("/users")
+@v1.route("/users/", methods=['GET'])
 def get():
     return make_response(jsonify({
         "users": user_model.db
     }), 200)
 
 """ This route allows unregistered users to sign up """
-@version1.route("/auth/signup", methods=['POST'])
+@v1.route("/auth/signup/", methods=['POST'])
 def registration():
     data = request.get_json()
 

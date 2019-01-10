@@ -12,5 +12,5 @@ meetup_model = MeetupModel()
 @v1.route("/meetups/", methods=['GET'])
 def get():
     return make_response(jsonify({
-        "users": meetup_model.db
+        "meetups": meetup_model.db
     }), 200)

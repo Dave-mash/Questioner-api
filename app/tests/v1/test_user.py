@@ -11,8 +11,7 @@ class TestUser(unittest.TestCase):
     
     def setUp(self):
         """ Initializes app """
-        self.app = create_app()
-        self.app.testing = False
+        self.app = create_app('testing')
         self.client = self.app.test_client()
 
         self.user = {

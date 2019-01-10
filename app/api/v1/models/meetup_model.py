@@ -9,9 +9,7 @@ class MeetupModel():
 
     def write_meetup(self, item):
         if item:
-            # user = [user for user in user_model.db if user['email'] == item['email']]
-            # if user and user.logged:
-            self.db.append(item)
-            return self.db
-            # else:
-                # return {"Error": "You are not logged in"}
+            dup_topic = [topic for topic in self.db if topic['topic'] == item['topic']]
+            if not dup_topic:
+                self.db.append(item)
+            return False

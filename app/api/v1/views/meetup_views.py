@@ -21,17 +21,16 @@ def get_all_meetups():
         "meetups": meetup_model.db
     }), 200)
 
-
+""" This route posts a meetup """
 @v1.route("/meetups/", methods=['POST'])
 def post_a_meetup():
     data = request.get_json()
     # datetime.datetime.now()
     meetup = {
-        "id": "{}".format(uuid.uuid4()),
         "location": data['location'],
         "topic": data['topic'],
-        "happeningOn": data['happeningOn']
-        # "tags": data['tags']
+        "happeningOn": data['happeningOn'],
+        "tags": data['tags']
     }
 
     if meetup_model.write_meetup(meetup):
@@ -46,7 +45,19 @@ def post_a_meetup():
             "data": [{
                 "location": data['location'],
                 "topic": data['topic'],
-                "happeningOn": data['happeningOn']
-                # "tags": data['tags']
+                "happeningOn": data['happeningOn'],
+                "tags": data['tags']
             }]
         }), 201
+
+""" This route fetches a specific meetup """
+@v1.route("/meetups/<int:meetupId>", methods=['GET'])
+def get_meetup(meetupId):
+    meetup = [meetup for meetup in meetup_model.db if meetup['id'] == meetupId]
+
+    if meetup:
+        return jsonify({
+            "status": 200,
+            "data": [meetup[0]]
+        })
+

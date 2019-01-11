@@ -25,6 +25,8 @@ class TestMeetups(unittest.TestCase):
     def post_req(self, path='api/v1/meetups', data={}):
         """ This function utilizes the test client to send POST requests """
         data = data if data else self.meetup
+        data['id'] = len(self.db)
+        self.db.append(data)
         res = self.client.post(
             path,
             data=json.dumps(data),
@@ -54,9 +56,32 @@ class TestMeetups(unittest.TestCase):
 
         """ Test that meetup topic must be unique """
 
-        # self.post_req()
-        # self.assertEqual(payload.status_code, 422) # Unprocessable entity
-        # self.assertEqual(payload.json['Error'], "Please make your topic unique.")
+    def test_fetch_specific_meetup(self):
+        """ Test that a user can fetch specific meetup """
+        self.db = []
+
+        meetup = {
+            "happeningOn" : "12/12/2018",
+            "location" : "Nairobi",
+            "tags": ["Machine learning", "Neural networks"],
+            "topic" : "Python data structures",
+        }
+
+        meetup2 = {
+            "happeningOn" : "20/12/2018",
+            "location" : "Thika Road",
+            "tags": ["Machine learning", "Neural networks"],
+            "topic" : "Python data structures",
+        }
+
+        self.post_req(data=meetup)
+        self.post_req(data=meetup2)
+
+        # res = self.get_req('api/v1/meetups/1')
+
+        # self.assertEqual(len(self.db), 2)
+        # self.assertEqual(res.json['status'], 200)
+        # self.assertEqual(res.json['data'], [])
 
     def tearDown(self):
         """ This function destroys all objects created during testing """

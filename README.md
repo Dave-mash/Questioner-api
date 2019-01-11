@@ -1,6 +1,9 @@
 # Questioner-api application endpoints
 [![Build Status](https://travis-ci.org/Dave-mash/Questioner-api.svg?branch=develop)](https://travis-ci.org/Dave-mash/Questioner-api)
-[![Coverage Status](https://coveralls.io/repos/github/Dave-mash/Questioner-api/badge.svg?branch=develop)](https://coveralls.io/github/Dave-mash/Questioner-api?branch=develop)
+[![Coverage Status](https://coveralls.io/repos/github/Dave-mash/Questioner-api/badge.svg)](https://coveralls.io/github/Dave-mash/Questioner-api)
+[![codecov](https://codecov.io/gh/Dave-mash/Questioner-api/branch/develop/graph/badge.svg)](https://codecov.io/gh/Dave-mash/Questioner-api)
+[![Maintainability](https://api.codeclimate.com/v1/badges/b5eed32593264dc4f9ac/maintainability)](https://codeclimate.com/github/Dave-mash/Questioner-api/maintainability)
+[![Codacy Badge](https://api.codacy.com/project/badge/Grade/1bfc349dcced4a1bbbe8dfe8a5204101)](https://www.codacy.com/app/macharia3041/Questioner-api?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=Dave-mash/Questioner-api&amp;utm_campaign=Badge_Grade)
 ## The following are API endpoints enabling one to:
 * Create an account and log in.
 * Create a meetup record.

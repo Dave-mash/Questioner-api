@@ -27,28 +27,23 @@ def post_a_meetup():
     data = request.get_json()
     # datetime.datetime.now()
     meetup = {
+        "title": data['title'],
+        "body": data['body'],
         "location": data['location'],
-        "topic": data['topic'],
         "happeningOn": data['happeningOn'],
         "tags": data['tags']
     }
-
-    if meetup_model.write_meetup(meetup):
-        return jsonify({
-            "status": 422,
-            "Error": "Please make your topic unique."
-        })
-    else:
-        return jsonify({
-            "status": 201,
-            "message": "You have successfully posted a meetup",
-            "data": [{
-                "location": data['location'],
-                "topic": data['topic'],
-                "happeningOn": data['happeningOn'],
-                "tags": data['tags']
-            }]
-        }), 201
+    meetup_model.write_meetup(meetup)
+    return jsonify({
+        "status": 201,
+        "message": "You have successfully posted a meetup",
+        "data": [{
+            "title": data['title'],
+            "location": data['location'],
+            "happeningOn": data['happeningOn'],
+            "tags": data['tags']
+        }]
+    }), 201
 
 """ This route fetches a specific meetup """
 @v1.route("/meetups/<int:meetupId>", methods=['GET'])

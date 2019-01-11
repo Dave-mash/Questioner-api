@@ -56,3 +56,14 @@ def get_meetup(meetupId):
             "data": [meetup[0]]
         })
 
+""" This route posts RSVPS on meetups """
+@v1.route("/meetups/<int:meetupId>/rsvp", methods=['POST'])
+def post_RSVP(meetupId):
+    data = request.get_json()
+
+    return jsonify({
+        "status": 201,
+        "title": data['title'],
+        "meetup": "{}".format(meetupId),
+        "message": "You have successfully posted an RSVP"
+    }), 201

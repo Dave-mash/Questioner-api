@@ -85,6 +85,20 @@ class TestMeetups(unittest.TestCase):
     #     self.assertEqual(res.json['status'], 200)
     #     self.assertEqual(res.json['data'], [])
 
+
+    def test_meetup_rsvps(self):
+        """ This method tests that a user can rsvp on a meeting """
+
+        rsvp = {
+            "meetup": 1,
+            "title": "Python",
+            "status": "yes"
+        }
+
+        payload = self.post_req(path="/api/v1/meetups/1/rsvp", data=rsvp)
+        self.assertEqual(payload.status_code, 201)
+        self.assertEqual(payload.json['message'], "You have successfully posted an RSVP")
+
     def tearDown(self):
         """ This function destroys all objects created during testing """
         self.db = []

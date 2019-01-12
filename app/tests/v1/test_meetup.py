@@ -99,6 +99,32 @@ class TestMeetups(unittest.TestCase):
         self.assertEqual(payload.status_code, 201)
         self.assertEqual(payload.json['message'], "You have successfully posted an RSVP")
 
+    # def test_upvote_question(self):
+    #     """ Test that a user can upvote a question """
+    #     upvote = {
+    #         "meetup": 1,
+    #         # "title": "Django",
+    #         # "body": "Introduction to Django",
+    #         "votes": 2
+    #     }
+
+    #     payload = self.post_req(path='api/v1/questions/1/upvote', data=upvote)
+    #     self.assertEqual(payload.status_code, 201)
+    #     self.assertEqual(payload.json['message'], "You have upvoted this question")
+        
+    # def test_downvote_question(self):
+    #     """ Test that a user can downvote a question """
+    #     downvote = {
+    #         "meetup": 1,
+    #         # "title": "Flask",
+    #         # "body": "Introduction to Flask",
+    #         "votes": -2
+    #     }
+
+    #     payload = self.post_req(path='api/v1/questions/1/downvote', data=downvote)
+    #     self.assertEqual(payload.status_code, 201)
+    #     self.assertEqual(payload.json['message'], "You have downvoted this question")
+
     def tearDown(self):
         """ This function destroys all objects created during testing """
         self.db = []

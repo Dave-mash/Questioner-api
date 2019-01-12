@@ -23,11 +23,6 @@ class TestUser(unittest.TestCase):
             "confirm_password": "abc123"
         }
 
-        self.log_user = {
-            "email": self.user['email'],
-            "password": self.user['password']
-        }
-
     def post_req(self, path='api/v1/auth/signup', data={}):
         """ This function utilizes the test client to send POST requests """
         data = data if data else self.user
@@ -119,6 +114,17 @@ class TestUser(unittest.TestCase):
         payload = self.post_req(data=user3)
 
         self.assertEqual(payload.status_code, 409) # Conflict
+
+    def test_log_in_user(self):
+        """ Test that user can log in with correct credintials """
+
+        user = {
+            "email": self.user['email'],
+            "password": self.user['password']
+        }
+
+        payload = self.post_req(path="api/v1/auth/login")
+        self.assertEqual(payload.status_code, 201)
 
 
     def tearDown(self):

@@ -54,7 +54,7 @@ def get_meetup(meetupId):
         return jsonify({
             "status": 200,
             "data": [meetup[0]]
-        })
+        }), 200
 
 """ This route posts RSVPS on meetups """
 @v1.route("/meetups/<int:meetupId>/rsvp", methods=['POST'])
@@ -67,3 +67,33 @@ def post_RSVP(meetupId):
         "meetup": "{}".format(meetupId),
         "message": "You have successfully posted an RSVP"
     }), 201
+
+# @v1.route("/questions/<int:questionId>/upvote", methods=['PATCH'])
+# def upvote_question(questionId):
+#     data = request.get_json()
+
+#     return jsonify({
+#         "status": 201,
+#         "message": "You have upvoted this question",
+#         "data": [{
+#             "meetup": "{}".format(questionId),
+#             # "title": data['title'],
+#             # "body": data['body'],
+#             "votes": "{}".format(data['votes'])
+#         }]
+#     }), 201
+
+# @v1.route("/questions/<int:questionId>/downvote", methods=['PATCH'])
+# def downvote_question(questionId):
+#     data = request.get_json()
+
+#     return jsonify({
+#         "status": 201,
+#         "message": "You have downvoted this question",
+#         "data": [{
+#             "meetup": "{}".format(questionId),
+#             # "title": data['title'],
+#             # "body": data['body'],
+#             "votes": "{}".format(data['votes'])
+#         }]
+#     }), 201

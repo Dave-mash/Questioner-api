@@ -48,3 +48,10 @@ class RegistrationForm:
             return False
         else:
             return True
+
+class LoginForm(RegistrationForm):
+    
+    def __init__(self, email, password):
+        self.email = email
+        self.password = password
+

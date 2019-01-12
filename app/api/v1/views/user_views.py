@@ -3,7 +3,7 @@ This module defines all the user endpoints
 """
 
 from flask import request, jsonify, make_response, Blueprint
-from app.api.v1.utils.validators import RegistrationForm
+from app.api.v1.utils.validators import RegistrationForm, LoginForm
 from app.api.v1.models.user_model import UserModel
 # from .. import v1
 v1 = Blueprint('userv1', __name__, url_prefix='/api/v1/')
@@ -71,3 +71,14 @@ def registration():
     }), 201)
 
 
+""" This route allows registered users to sign in """
+@v1.route("/auth/login", methods=['POST'])
+def login():
+    data = request.get_json()
+
+    LoginForm(data['email'], data['password'])
+
+    return jsonify({
+        "status": 201,
+        "message": "{} has been successfully logged in".format(data['email'])
+    }), 201

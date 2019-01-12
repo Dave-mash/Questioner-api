@@ -47,4 +47,30 @@ def create_question(questionId):
         # "votes": 2
     # }
 
+@v1.route("/questions/<int:questionId>/upvote", methods=['PATCH'])
+def upvote_question(questionId):
+    data = request.get_json()
 
+    vote = {
+        "vote": data['vote']
+    }
+
+    return jsonify({
+        "status": 200,
+        "meetup": "{}".format(questionId),
+        "vote": data['vote']
+    }), 200
+
+@v1.route("/questions/<int:questionId>/downvote", methods=['PATCH'])
+def downvote_question(questionId):
+    data = request.get_json()
+
+    vote = {
+        "vote": data['vote']
+    }
+
+    return jsonify({
+        "status": 200,
+        "meetup": "{}".format(questionId),
+        "vote": data['vote']
+    }), 200

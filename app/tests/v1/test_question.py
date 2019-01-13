@@ -17,7 +17,7 @@ class TestQuestions(unittest.TestCase):
         self.client = self.app.test_client()
         self.question = {
             "id": len(self.db),
-            "meetup_id": 1,
+            "meetup_id": 0,
             "createdOn": str(datetime.now()),
             "createdBy": 1,
             "title": "Python",
@@ -46,13 +46,14 @@ class TestQuestions(unittest.TestCase):
     def test_create_question(self):
         """ Test that a user can create a question """
         self.db = []
-        payload = self.post_req(path='api/v1/0/questions') # this part needs refactoring
-        if self.db:
-            self.assertEqual(payload.status_code, 201)
-        else:
-            self.assertTrue(self.db, False)
-            self.assertEqual(payload.status_code, 404)
-        # self.assertEqual(payload.json['message'], "You have successfully posted a question")
+        self.post_req()
+        question = [que for que in self.db if que['meetup_id'] == 0]
+        payload = self.post_req(path='api/v1/0/questions', data=question[0]) # this part needs refactoring
+        self.assertEqual(payload.status_code, 201)
+
+        question2 = [que for que in self.db if que['meetup_id'] == 0]
+        payload = self.post_req(path='api/v1/5/questions', data=question2[0]) # this part needs refactoring
+        self.assertEqual(payload.status_code, 404)
 
     # def test_upvote_question(self):
     #     """ Test that a user can upvote a question """

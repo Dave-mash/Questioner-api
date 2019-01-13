@@ -5,6 +5,7 @@ This module defines all the user endpoints
 from flask import request, jsonify, make_response, Blueprint
 from app.api.v1.utils.validators import Validator
 from app.api.v1.models.user_model import UserModel
+import uuid
 
 v1 = Blueprint('userv1', __name__, url_prefix='/api/v1/')
 
@@ -24,6 +25,7 @@ def get():
 @v1.route("/auth/signup", methods=['POST'])
 def registration():
     data = request.get_json()
+    meetups = user_model.get_items()
 
     # Validate user
     user1 = Validator(
@@ -43,6 +45,7 @@ def registration():
     
     # Register user
     user_item = {
+        "id": len(meetups), # str(uuid.uuid4()),
         "first_name": data['first_name'],
         "last_name": data['last_name'],
         "othername": data['othername'],

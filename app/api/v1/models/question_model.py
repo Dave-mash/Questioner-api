@@ -19,7 +19,6 @@ class QuestionModel(MeetupModel):
         try:
             if question_item:
                 question = {
-                    "id": str(uuid.uuid4()),
                     "meetup_id": question_item['meetup_id'],
                     "createdOn": datetime.now(),
                     "createdBy": question_item['createdBy'],

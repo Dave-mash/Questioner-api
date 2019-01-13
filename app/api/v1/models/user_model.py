@@ -18,7 +18,6 @@ class UserModel(BaseModel):
     def save_user(self, user_item):
         if user_item:
             user = {
-                "id": str(uuid.uuid4()),
                 "first_name": user_item['first_name'],
                 "last_name": user_item['last_name'],
                 "othername": user_item['othername'],

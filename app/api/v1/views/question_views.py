@@ -20,10 +20,11 @@ v1 = Blueprint('questionv1', __name__, url_prefix='/api/v1/')
 # @v1.route("/questions/<int:questionId>", methods=['POST'])
 # def create_question(questionId):
 #     data = request.get_json()
-    
+    # meetups = meetup_model.get_items()
 #     meetup_item = {
 #         "title": data['title'],
 #         "body": data['body'],
+        # "id": len(meetups), # str(uuid.uuid4()),
 #     }
 
 #     # if question_model.write_question(meetup_item):

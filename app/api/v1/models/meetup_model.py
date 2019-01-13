@@ -4,7 +4,6 @@ This module defines the meetup model class and all it's methods
 
 from werkzeug.exceptions import BadRequest
 from datetime import datetime
-import uuid
 
 from app.api.v1.models.base_model import BaseModel
 
@@ -13,12 +12,11 @@ class MeetupModel(BaseModel):
 
     base_model = BaseModel("meetup_db")
 
-    # Save data
+    # Save meetup
     def save_meetup(self, meetup_item):
         try:
             if meetup_item:
                 meetup = {
-                    "id": str(uuid.uuid4()),
                     "createdOn": datetime.now(),
                     "topic": meetup_item['topic'],
                     "description": meetup_item['description'],
@@ -30,7 +28,7 @@ class MeetupModel(BaseModel):
         except:
             raise BadRequest('No data found')
 
-    # Edit data
+    # Edit meetup
     def edit_meetup(self, updates, meetup_id):
         try:
             if updates and meetup_id:
@@ -38,10 +36,15 @@ class MeetupModel(BaseModel):
         except:
             raise BadRequest('No data found')
 
-    # Delete data
+    # Delete meetup
     def del_meetup(self, meetup_id):
         try:
             if meetup_id:
                 self.base_model.delete_data(meetup_id)
         except:
             raise BadRequest('No data found')
+
+    # # RSVP meetup
+    # def rsvp_meetup(self, rsvp_item):
+    #     try:
+    #         if rsvp_item:

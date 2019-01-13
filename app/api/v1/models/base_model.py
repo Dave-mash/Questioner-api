@@ -41,8 +41,8 @@ class BaseModel:
     # Get data by id
     def get_item_by_id(self, item_id):
         self.check_db()
-        item = [item for item in self.db if item_id == item.id]
-        return item[0]
+        item = [item for item in self.db if item_id == item['id']]
+        return item
         
     # Update data
     def update_data(self, item_id, updates):

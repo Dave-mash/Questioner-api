@@ -53,37 +53,20 @@ class TestMeetups(unittest.TestCase):
         self.assertEqual(payload.status_code, 201)
         self.assertEqual(payload.json['message'], "You have successfully posted a meetup")
 
-    #     """ Test that meetup topic must be unique """
+        # """ Test that meetup topic must be unique """
 
-    # def test_fetch_specific_meetup(self):
-    #     """ Test that a user can fetch specific meetup """
-    #     self.db = []
+    def test_fetch_specific_meetup(self):
+        """ Test that a user can fetch specific meetup """
+        self.db = []
 
-    #     meetup = {
-    #         "happeningOn" : "12/12/2018",
-    #         "location" : "Nairobi",
-    #         "body": "Will we talk about python ml?",
-    #         "tags": ["Machine learning", "Neural networks"],
-    #         "title" : "Python data structures",
-    #     }   
+        self.post_req()
+        self.post_req()
 
-    #     meetup2 = {
-    #         "happeningOn" : "20/12/2018",
-    #         "location" : "Thika Road",
-    #         "body": "Will we talk about python ml?",
-    #         "tags": ["Machine learning", "Neural networks"],
-    #         "title": "Python data structures",
-    #     }
+        res = self.get_req('api/v1/meetups/1')
 
-    #     self.post_req(data=meetup)
-    #     self.post_req(data=meetup2)
-
-    #     res = self.get_req('api/v1/meetups/1')
-
-    #     self.assertEqual(len(self.db), 2)
-    #     self.assertEqual(res.json['status'], 200)
-    #     self.assertEqual(res.json['data'], [])
-
+        self.assertEqual(len(self.db), 2)
+        self.assertEqual(res.json['status'], 200)
+        self.assertTrue(res.json['data'])
 
     # def test_meetup_rsvps(self):
     #     """ This method tests that a user can rsvp on a meeting """

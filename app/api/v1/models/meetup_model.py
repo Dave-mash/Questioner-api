@@ -17,6 +17,7 @@ class MeetupModel(BaseModel):
         try:
             if meetup_item:
                 meetup = {
+                    "id": meetup_item['id'],
                     "createdOn": datetime.now(),
                     "topic": meetup_item['topic'],
                     "description": meetup_item['description'],

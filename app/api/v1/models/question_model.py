@@ -16,18 +16,17 @@ class QuestionModel(MeetupModel):
 
     # Save data
     def save_question(self, question_item):
-        try:
-            if question_item:
-                question = {
-                    "meetup_id": question_item['meetup_id'],
-                    "createdOn": datetime.now(),
-                    "createdBy": question_item['createdBy'],
-                    "title": question_item['title'],
-                    "body": question_item['body'],
-                    "votes": question_item['votes'],
-                }
-                self.base_model.save_data(question)
-        except:
+        if question_item:
+            question = {
+                "id": question_item['id'],
+                "meetup": question_item['meetup_id'],
+                "createdBy": question_item['createdBy'],
+                "title": question_item['title'],
+                "body": question_item['body'],
+                "votes": 0
+            }
+            self.base_model.save_data(question)
+        else:
             raise BadRequest('No data found')
 
     # Edit data

@@ -1,15 +1,51 @@
-import uuid
+"""
+This module defines the meetup model class and all it's methods
+"""
 
-class MeetupModel():
-    """ add user a meetup to the database """
+from werkzeug.exceptions import BadRequest
+from datetime import datetime
 
-    def __init__(self, logged=False):
-        self.logged = logged
-        self.db = []
+from app.api.v1.models.base_model import BaseModel
 
-    def write_meetup(self, item):
-        if item:
-            item['id'] = len(self.db)# uuid.uuid4(),
-            self.db.append(item)
-            return item['id']
-        return False
+class MeetupModel(BaseModel):
+    """ add a meetup to the database """
+
+    base_model = BaseModel("meetup_db")
+
+    # Save meetup
+    def save_meetup(self, meetup_item):
+        try:
+            if meetup_item:
+                meetup = {
+                    "id": meetup_item['id'],
+                    "createdOn": datetime.now(),
+                    "topic": meetup_item['topic'],
+                    "description": meetup_item['description'],
+                    "location": meetup_item['location'],
+                    "happeningOn": meetup_item['happeningOn'],
+                    "tags": meetup_item['tags']
+                }
+                self.base_model.save_data(meetup)
+        except:
+            raise BadRequest('No data found')
+
+    # Edit meetup
+    def edit_meetup(self, updates, meetup_id):
+        try:
+            if updates and meetup_id:
+                self.base_model.update_data(meetup_id, updates)
+        except:
+            raise BadRequest('No data found')
+
+    # Delete meetup
+    def del_meetup(self, meetup_id):
+        try:
+            if meetup_id:
+                self.base_model.delete_data(meetup_id)
+        except:
+            raise BadRequest('No data found')
+
+    # # RSVP meetup
+    # def rsvp_meetup(self, rsvp_item):
+    #     try:
+    #         if rsvp_item:

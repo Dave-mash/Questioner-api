@@ -3,27 +3,32 @@ This module defines all the user endpoints
 """
 
 from flask import request, jsonify, make_response, Blueprint
-from app.api.v1.utils.validators import RegistrationForm, LoginForm
+from app.api.v1.utils.validators import Validator
 from app.api.v1.models.user_model import UserModel
-# from .. import v1
+import uuid
+
 v1 = Blueprint('userv1', __name__, url_prefix='/api/v1/')
 
-user_model = UserModel()
+user_model = UserModel('user_db')
 
 """ This route fetches all users """
 @v1.route("/users")
 def get():
+    users = user_model.get_items()
+
     return make_response(jsonify({
-        "users": user_model.db
+        "status": 200,
+        "users": users
     }), 200)
 
 """ This route allows unregistered users to sign up """
 @v1.route("/auth/signup", methods=['POST'])
 def registration():
     data = request.get_json()
+    meetups = user_model.get_items()
 
-    # Create user
-    user1 = RegistrationForm(
+    # Validate user
+    user1 = Validator(
         data['first_name'],
         data['last_name'],
         data['username'],
@@ -31,38 +36,26 @@ def registration():
         data['password'],
         data['confirm_password']
     )
-    def json(error, status=422):
-        return make_response(jsonify({
-            "status": status,
-            "Error": error
-        }), status)
 
-    # prompt user fields
-    if not user1.data_exists():
-        return json('You missed a required field')
-    elif not user1.valid_name():
-        return json('Your username is too short!')
-    elif not user1.valid_email(data['email']):
-        return json('Invalid email address')
-    elif not user1.valid_confirm_password():
-        return json('Your passwords don\'t match')
-    elif not user1.valid_password(data['password']):
-        return json('Weak password')
+    user1.data_exists()
+    user1.valid_name()
+    user1.valid_email()
+    user1.valid_password()
+    user1.matching_password()
     
     # Register user
-    user_model.create_account(
-        {
-            "username": data['username'],
-            "email": data['email'],
-            "password": data['password'],
-            "logged on": user_model.logged[0]
-        }
-    )
+    user_item = {
+        "id": len(meetups), # str(uuid.uuid4()),
+        "first_name": data['first_name'],
+        "last_name": data['last_name'],
+        "othername": data['othername'],
+        "email": data['email'],
+        "phoneNumber": data['phoneNumber'],
+        "username": data['username'],
+        "password": data['password'],
+    }
 
-    if user_model.dup_email:
-        return json(user_model.dup_email['Error'], 409)
-    elif user_model.dup_username:
-        return json(user_model.dup_username['Error'], 409)
+    user_model.save_user(user_item)
 
     return make_response(jsonify({
         "status": "ok",
@@ -76,7 +69,16 @@ def registration():
 def login():
     data = request.get_json()
 
-    LoginForm(data['email'], data['password'])
+    user1 = Validator(email=data['email'], password=data['password'])
+    user1.valid_email()
+    user1.valid_password()
+
+    credentials = {
+        "email": data['email'],
+        "password": data['password']
+    }
+
+    user_model.log_in_user(credentials)
 
     return jsonify({
         "status": 201,

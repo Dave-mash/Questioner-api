@@ -6,6 +6,7 @@ import datetime
 import unittest
 import json
 from app import create_app
+from datetime import datetime
 
 class TestQuestions(unittest.TestCase):
     db = []
@@ -15,8 +16,13 @@ class TestQuestions(unittest.TestCase):
         self.app = create_app('testing')
         self.client = self.app.test_client()
         self.question = {
+            "id": len(self.db),
+            "meetup_id": 1,
+            "createdOn": str(datetime.now()),
+            "createdBy": 1,
             "title": "Python",
-            "body": "Will we talk about data science with Python?"
+            "body": "Will we talk about data science with Python?",
+            "votes": 0
         }
 
     def post_req(self, path='api/v1/questions', data={}):
@@ -39,10 +45,14 @@ class TestQuestions(unittest.TestCase):
 
     def test_create_question(self):
         """ Test that a user can create a question """
-    
-        payload = self.post_req(path='api/v1/questions/0') # this part needs refactoring
-        self.assertEqual(payload.status_code, 201)
-        self.assertEqual(payload.json['message'], "You have successfully posted a question")
+        self.db = []
+        payload = self.post_req(path='api/v1/0/questions') # this part needs refactoring
+        if self.db:
+            self.assertEqual(payload.status_code, 201)
+        else:
+            self.assertTrue(self.db, False)
+            self.assertEqual(payload.status_code, 404)
+        # self.assertEqual(payload.json['message'], "You have successfully posted a question")
 
     # def test_upvote_question(self):
     #     """ Test that a user can upvote a question """

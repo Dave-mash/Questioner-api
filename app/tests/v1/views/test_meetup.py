@@ -53,8 +53,6 @@ class TestMeetups(unittest.TestCase):
         self.assertEqual(payload.status_code, 201)
         self.assertEqual(payload.json['message'], "You have successfully posted a meetup")
 
-        # """ Test that meetup topic must be unique """
-
     def test_fetch_specific_meetup(self):
         """ Test that a user can fetch specific meetup """
         self.db = []
@@ -62,25 +60,53 @@ class TestMeetups(unittest.TestCase):
         self.post_req()
         self.post_req()
 
+        meetup = [meetup for meetup in self.db if meetup['id'] == 1]
         res = self.get_req('api/v1/meetups/1')
+        self.assertEqual(res.status_code, 200)
 
-        self.assertEqual(len(self.db), 2)
-        self.assertEqual(res.json['status'], 200)
-        self.assertTrue(res.json['data'])
+        meetup = [meetup for meetup in self.db if meetup['id'] == 5]
+        res2 = self.get_req('api/v1/meetups/5')
+        self.assertEqual(res2.status_code, 404)
 
-    # def test_meetup_rsvps(self):
-    #     """ This method tests that a user can rsvp on a meeting """
+    def test_meetup_rsvps(self):
+        """ This method tests that a user can rsvp on a meeting """
+        rsvp = {
+            "id": 0,
+            "status": "yes"
+        }
 
-    #     rsvp = {
-    #         "meetup": 1,
-    #         "title": "Python",
-    #         "status": "yes"
-    #     }
+        self.db = []
 
-    #     payload = self.post_req(path="/api/v1/meetups/1/rsvp", data=rsvp)
-    #     self.assertEqual(payload.status_code, 201)
-    #     self.assertEqual(payload.json['message'], "You have successfully posted an RSVP")
+        # tests for existing meetup
+        self.post_req()
 
+        meetup = [meetup for meetup in self.db if meetup['id'] == rsvp['id']]
+
+        payload = self.post_req(path="/api/v1/meetups/0/rsvp", data=rsvp)
+        self.assertEqual(payload.status_code, 200)
+        topic = meetup[0]['topic'].upper()
+
+        rsvp2 = { "id": 0, "status": "yes" }
+        rsvp.update(rsvp2)
+        payload = self.post_req(path="/api/v1/meetups/0/rsvp", data=rsvp)
+        self.assertEqual(payload.json['message'], "You have successfully RSVP'd on {} meetup".format(topic))
+        
+        rsvp3 = { "id": 0, "status": "no" }
+        rsvp.update(rsvp3)
+        payload = self.post_req(path="/api/v1/meetups/0/rsvp", data=rsvp)
+        self.assertEqual(payload.json['message'], "You have confirmed you're not attending the {} meetup".format(topic))
+
+        rsvp4 = { "id": 0, "status": "maybe" }
+        rsvp.update(rsvp4)
+        payload = self.post_req(path="/api/v1/meetups/0/rsvp", data=rsvp)
+        self.assertEqual(payload.json['message'], "You have confirmed you might attend the {} meetup".format(topic))
+
+        # Test for non-existing meetup
+        rsvp5 = { "id": 5, "status": "maybe" }
+        rsvp.update(rsvp5)
+        payload = self.post_req(path="/api/v1/meetups/5/rsvp", data=rsvp)
+        self.assertEqual(payload.status_code, 404) # not found
+        
     def tearDown(self):
         """ This function destroys all objects created during testing """
         self.db = []

@@ -18,8 +18,8 @@ class TestMeetups(unittest.TestCase):
             "happeningOn" : "12/12/2018",
             "location" : "Nairobi",
             "tags": ["Machine learning", "Neural networks"],
-            "title": "Python data structures",
-            "body": "Deep dive into python programming",
+            "topic": "Python data structures",
+            "description": "Deep dive into python programming",
         }
 
     def post_req(self, path='api/v1/meetups', data={}):
@@ -45,7 +45,6 @@ class TestMeetups(unittest.TestCase):
 
         get = self.get_req('/api/v1/meetups')
         self.assertEqual(get.status_code, 200)
-        # self.assertEqual(get.json['meetups'], self.db)
 
     def test_create_meetup_record(self):
         """ Test that a user can create a meetup """
@@ -54,7 +53,7 @@ class TestMeetups(unittest.TestCase):
         self.assertEqual(payload.status_code, 201)
         self.assertEqual(payload.json['message'], "You have successfully posted a meetup")
 
-        """ Test that meetup topic must be unique """
+    #     """ Test that meetup topic must be unique """
 
     # def test_fetch_specific_meetup(self):
     #     """ Test that a user can fetch specific meetup """
@@ -86,18 +85,18 @@ class TestMeetups(unittest.TestCase):
     #     self.assertEqual(res.json['data'], [])
 
 
-    def test_meetup_rsvps(self):
-        """ This method tests that a user can rsvp on a meeting """
+    # def test_meetup_rsvps(self):
+    #     """ This method tests that a user can rsvp on a meeting """
 
-        rsvp = {
-            "meetup": 1,
-            "title": "Python",
-            "status": "yes"
-        }
+    #     rsvp = {
+    #         "meetup": 1,
+    #         "title": "Python",
+    #         "status": "yes"
+    #     }
 
-        payload = self.post_req(path="/api/v1/meetups/1/rsvp", data=rsvp)
-        self.assertEqual(payload.status_code, 201)
-        self.assertEqual(payload.json['message'], "You have successfully posted an RSVP")
+    #     payload = self.post_req(path="/api/v1/meetups/1/rsvp", data=rsvp)
+    #     self.assertEqual(payload.status_code, 201)
+    #     self.assertEqual(payload.json['message'], "You have successfully posted an RSVP")
 
     def tearDown(self):
         """ This function destroys all objects created during testing """

@@ -1,57 +1,56 @@
+from werkzeug.exceptions import BadRequest, Conflict
 import re
 
-class RegistrationForm:
+class Validator:
     
-    def __init__(self, Fname, Lname, username, email, password, confirm_password):
+    def __init__(
+        self,
+        Fname="",
+        Lname="",
+        username="",
+        email="",
+        password="",
+        confirm_password=""
+    ):
         self.Fname = Fname
         self.Lname = Lname
         self.username = username
         self.email = email
         self.password = password
         self.confirm_password = confirm_password
-    
+
     def data_exists(self):
-        if not self.username or not self.email or not self.password or not self.confirm_password:
-            return False
-        else:
-            return True
+
+        data = {
+            "Fname": self.Fname,
+            "Lname": self.Lname,
+            "username": self.username,
+            "email": self.email,
+            "password": self.password,
+            "confirm_password": self.confirm_password
+        }
+
+        for key, value in data.items():
+            if not value:
+                raise BadRequest('{}. This field is required!'.format(key))
 
     def valid_name(self):
-        if len(self.username) < 3 or len(self.username) > 20:
-            return False
-        else:
-            return True
+        if self.username:
+            if len(self.username) < 3 or len(self.username) > 20:
+                raise BadRequest('Your username is too short!')
 
-    @classmethod
-    def valid_email(cls, email):
-        cls.email = email
+    def valid_email(self):
         regex = re.compile(r"^[A-Za-z0-9\.\+_-]+@[A-Za-z0-9\._-]+\.[a-zA-Z]*$")
         
-        if not re.match(regex, cls.email):
-            return False
-        else:
-            return True
+        if not re.match(regex, self.email):
+            raise BadRequest('Invalid email address!')
 
-    @classmethod
-    def valid_password(cls, password):
-        cls.password = password
+    def valid_password(self):
         regex = re.compile(r'[a-zA-Z0-9@_+-.]{3,}$')
-        # regex = re.compile(r'^(?=\S{6,20}$)(?=.*?\d)(?=.*?[a-z])(?=.*?[A-Z](?=.*?[^A-Za-z\s0-9]))')
 
-        if not re.match(regex, cls.password):
-            return False
-        else:
-            return True
+        if not re.match(regex, self.password):
+            raise BadRequest('Weak password!')
 
-    def valid_confirm_password(self):
+    def matching_password(self):
         if self.password != self.confirm_password:
-            return False
-        else:
-            return True
-
-class LoginForm(RegistrationForm):
-    
-    def __init__(self, email, password):
-        self.email = email
-        self.password = password
-
+            raise BadRequest('Your passwords don\'t match')

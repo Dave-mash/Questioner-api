@@ -31,42 +31,55 @@ def create_question(meetupId):
             "createdOn": datetime.now(),
             "createdBy": data['createdBy'], # user_id
             "title": data['title'],
-            "body": data['body']
+            "body": data['body'],
+            "votes": 0
         }
 
         question_model.save_question(question)
+        
         return jsonify({
             "status": 201,
             "message": "You have successfully posted a question on {} meetup".format(meetup[0]['topic']),
-            "data": [question]
+            "data": [question],
+            "question": question_model.get_items()
         }), 201
     elif not meetup:
         raise NotFound('No meetup found or does\'nt exist!')
 
-# @v1.route("/questions/<int:questionId>/upvote", methods=['PATCH'])
-# def upvote_question(questionId):
-#     data = request.get_json()
+""" This route upvotes a question """
+@v1.route("/questions/<int:questionId>/upvote", methods=['PATCH'])
+def upvote_question(questionId):
 
-#     vote = {
-#         "vote": data['vote']
-#     }
+    question_model.upvote_question(questionId)
+    questions = question_model.get_items()
+    question = [que for que in questions if que['id'] == questionId]
 
-#     return jsonify({
-#         "status": 200,
-#         "meetup": "{}".format(questionId),
-#         "vote": data['vote']
-#     }), 200
+    return make_response(jsonify({
+        "status": 200,
+        "data": [{
+            "meetup": "{}".format(questionId),
+            "title": question[0]['title'],
+            "body": question[0]['body'],
+            "votes": question[0]['votes']
+        }],
+        "message": "You have successfully upvoted"
+    }), 200)
 
-# @v1.route("/questions/<int:questionId>/downvote", methods=['PATCH'])
-# def downvote_question(questionId):
-#     data = request.get_json()
+""" This route downvotes a question """
+@v1.route("/questions/<int:questionId>/downvote", methods=['PATCH'])
+def downvote_question(questionId):
 
-#     vote = {
-#         "vote": data['vote']
-#     }
+    question_model.downvote_question(questionId)
+    questions = question_model.get_items()
+    question = [que for que in questions if que['id'] == questionId]
 
-#     return jsonify({
-#         "status": 200,
-#         "meetup": "{}".format(questionId),
-#         "vote": data['vote']
-#     }), 200
+    return make_response(jsonify({
+        "status": 200,
+        "data": [{
+            "meetup": "{}".format(questionId),
+            "title": question[0]['title'],
+            "body": question[0]['body'],
+            "votes": question[0]['votes']
+        }],
+        "message": "You have successfully downvoted"
+    }), 200)

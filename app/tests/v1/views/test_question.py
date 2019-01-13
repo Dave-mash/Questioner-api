@@ -17,7 +17,7 @@ class TestQuestions(unittest.TestCase):
         self.client = self.app.test_client()
         self.question = {
             "id": len(self.db),
-            "meetup_id": 1,
+            "meetup_id": 0,
             "createdOn": str(datetime.now()),
             "createdBy": 1,
             "title": "Python",
@@ -46,40 +46,31 @@ class TestQuestions(unittest.TestCase):
     def test_create_question(self):
         """ Test that a user can create a question """
         self.db = []
-        payload = self.post_req(path='api/v1/0/questions') # this part needs refactoring
-        if self.db:
-            self.assertEqual(payload.status_code, 201)
-        else:
-            self.assertTrue(self.db, False)
-            self.assertEqual(payload.status_code, 404)
-        # self.assertEqual(payload.json['message'], "You have successfully posted a question")
+        self.post_req()
+        question = [que for que in self.db if que['meetup_id'] == 0]
+        payload = self.post_req(path='api/v1/0/questions', data=question[0])
+        self.assertEqual(payload.status_code, 201)
+
+        question2 = [que for que in self.db if que['meetup_id'] == 0]
+        payload = self.post_req(path='api/v1/5/questions', data=question2[0])
+        self.assertEqual(payload.status_code, 404)
 
     # def test_upvote_question(self):
     #     """ Test that a user can upvote a question """
-    #     upvote = {
-    #         # "meetup": 1,
-    #         # "title": "Django",
-    #         # "body": "Introduction to Django",
-    #         "votes": 2
-    #     }
-
-    #     payload = self.post_req(path='api/v1/questions/1/upvote', data=upvote)
+    #     self.client.post(
+    #         'api/v1/questions',
+    #         data=json.dumps(self.question),
+    #         content_type='application/json'
+    #     )      
+    #     payload = self.client.patch('/api/v1/questions/0/upvote')
     #     self.assertEqual(payload.status_code, 200)
-    #     # self.assertEqual(payload.json['message'], "You have upvoted this question")
         
     # def test_downvote_question(self):
     #     """ Test that a user can downvote a question """
-    #     downvote = {
-    #         # "meetup": 1,
-    #         # "title": "Flask",
-    #         # "body": "Introduction to Flask",
-    #         "votes": -2
-    #     }
 
-    #     payload = self.post_req(path='api/v1/questions/1/downvote', data=downvote)
+    #     payload = self.client.patch('api/v1/questions/1/downvote')
     #     self.assertEqual(payload.status_code, 200)
-    #     # self.assertEqual(payload.json['message'], "You have downvoted this question")
-
+        
     def tearDown(self):
         """ This function destroys all objects created during testing """
         self.db = []

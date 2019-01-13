@@ -2,7 +2,7 @@
 This module defines the meetup model class and all it's methods
 """
 
-from werkzeug.exceptions import BadRequest
+from werkzeug.exceptions import NotFound
 from datetime import datetime
 
 from app.api.v1.models.base_model import BaseModel
@@ -27,25 +27,28 @@ class MeetupModel(BaseModel):
                 }
                 self.base_model.save_data(meetup)
         except:
-            raise BadRequest('No data found')
+            raise NotFound('No data found')
 
-    # Edit meetup
-    def edit_meetup(self, updates, meetup_id):
-        try:
-            if updates and meetup_id:
-                self.base_model.update_data(meetup_id, updates)
-        except:
-            raise BadRequest('No data found')
-
-    # Delete meetup
-    def del_meetup(self, meetup_id):
-        try:
-            if meetup_id:
-                self.base_model.delete_data(meetup_id)
-        except:
-            raise BadRequest('No data found')
-
-    # # RSVP meetup
-    # def rsvp_meetup(self, rsvp_item):
+    # # Edit meetup
+    # def edit_meetup(self, updates, meetup_id):
     #     try:
-    #         if rsvp_item:
+    #         if updates and meetup_id:
+    #             self.base_model.update_data(meetup_id, updates)
+    #     except:
+    #         raise NotFound('No data found')
+
+    # # Delete meetup
+    # def del_meetup(self, meetup_id):
+    #     try:
+    #         if meetup_id:
+    #             self.base_model.delete_data(meetup_id)
+    #     except:
+    #         raise NotFound('No data found')
+
+    # RSVP meetup
+    def rsvp_meetup(self, rsvp_item):
+
+        if rsvp_item:
+            pass
+        else:
+            raise NotFound('No data found')

@@ -27,6 +27,9 @@ class UserModel(BaseModel):
                 "dateRegistered": str(datetime.today()),
                 "password": user_item['password'],
                 "isAdmin": False,
+                "rsvps": {
+                    "going": []
+                }
             }
             
             # Check for duplicate email and username

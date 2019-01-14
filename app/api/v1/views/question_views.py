@@ -83,3 +83,41 @@ def downvote_question(questionId):
         }],
         "message": "You have successfully downvoted"
     }), 200)
+
+@v1.route("/questions/<int:questionId>/delete", methods=['DELETE'])
+def delete_question(questionId):
+
+    question_model.del_question(questionId)
+
+    return make_response(jsonify({
+        "status": 200,
+        "message": "You have deleted this question"
+    }), 200)
+
+# @v1.route("/questions/<int:questionId>/edit", methods=['DELETE'])
+# def delete_question(questionId):
+
+#     question_model.del_question(questionId)
+
+#     return make_response(jsonify({
+#         "status": 200,
+#         "message": "You have deleted this question"
+#     }), 200)
+
+
+"""
+question = {
+    "meetup_id": 0,
+    "createdBy": "Dave", 
+    "title": "Python",
+    "body": "What is python Data Structure",
+    "votes": 0
+}
+upvote = {
+    vote: 1
+}
+downvote = {
+    vote: 1
+}
+"""
+        

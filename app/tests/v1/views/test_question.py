@@ -24,6 +24,13 @@ class TestQuestions(unittest.TestCase):
             "body": "Will we talk about data science with Python?",
             "votes": 0
         }
+        self.meetup = {
+            "happeningOn" : "12/12/2018",
+            "location" : "Nairobi",
+            "tags": ["Machine learning", "Neural networks"],
+            "topic": "Python data structures",
+            "description": "Deep dive into python programming",
+        }
 
     def post_req(self, path='api/v1/questions', data={}):
         """ This function utilizes the test client to send POST requests """
@@ -57,11 +64,8 @@ class TestQuestions(unittest.TestCase):
 
     # def test_upvote_question(self):
     #     """ Test that a user can upvote a question """
-    #     self.client.post(
-    #         'api/v1/questions',
-    #         data=json.dumps(self.question),
-    #         content_type='application/json'
-    #     )      
+    #     self.post_req(path='api/v1/meetups', data=self.meetup)
+    #     self.post_req()
     #     payload = self.client.patch('/api/v1/questions/0/upvote')
     #     self.assertEqual(payload.status_code, 200)
         

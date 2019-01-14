@@ -40,10 +40,10 @@ class TestMeetups(unittest.TestCase):
         res = self.client.get(path)
         return res 
 
-    def test_get_all_meetups(self):
+    def test_get_all_upcoming_meetups(self):
         """ Test that all meetups can be fetched """
 
-        get = self.get_req('/api/v1/meetups')
+        get = self.get_req('/api/v1/meetups/upcoming')
         self.assertEqual(get.status_code, 200)
 
     def test_create_meetup_record(self):

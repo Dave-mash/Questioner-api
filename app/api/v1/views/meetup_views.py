@@ -15,12 +15,13 @@ v1 = Blueprint('meetupv1', __name__, url_prefix='/api/v1/')
 
 meetup_models = MeetupModel('meetup_db')
 
-""" This route performs a get request to fetch all meetups """
-@v1.route("/meetups/", methods=['GET'])
+""" This route performs a get request to fetch all upcoming meetups """
+@v1.route("/meetups/upcoming", methods=['GET'])
 def get_all_meetups():
     meetups = meetup_models.get_items()
 
     return make_response(jsonify({
+        "status": 200,
         "meetups": meetups
     }), 200)
 
@@ -130,3 +131,16 @@ def post_RSVP(meetupId):
 #             "votes": "{}".format(data['votes'])
 #         }]
 #     }), 201
+
+"""
+meetup = {
+    "topic": "a meetup",
+    "description": "this is a meetup",
+    "location": "Nairobi",
+    "happeningOn": "12/12/2019",
+    "tags": "['Django', 'Flask']"
+}
+rsvp = {
+    "status"
+}
+"""

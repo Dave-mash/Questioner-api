@@ -84,3 +84,21 @@ def login():
         "status": 201,
         "message": "{} has been successfully logged in".format(data['email'])
     }), 201
+
+"""
+{
+    "first_name" : "David",
+    "last_name" : "Mwangi",
+    "othername" : "Dave",
+    "email" : "demo@demo.com",
+    "phoneNumber" : "0729710290",
+    "username" : "Dave",
+    "password": "abc123",
+    "confirm_password": "abc123"
+}
+
+{
+    "email": "demo@demo.com",
+    "password": "password"
+}
+"""

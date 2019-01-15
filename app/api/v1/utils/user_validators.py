@@ -44,8 +44,10 @@ class UserValidator:
 
     def valid_name(self):
         if self.username:
-            if len(self.username) < 3 or len(self.username) > 20:
+            if len(self.username) < 3:
                 return base_model.errorHandler('Your username is too short!')
+            elif len(self.username) > 20:
+                return base_model.errorHandler('Your username is too long!')
 
     def valid_email(self):
         regex = re.compile(r"^[A-Za-z0-9\.\+_-]+@[A-Za-z0-9\._-]+\.[a-zA-Z]*$")

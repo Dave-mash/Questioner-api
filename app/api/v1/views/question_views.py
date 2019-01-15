@@ -27,10 +27,15 @@ def create_question(meetupId, userId):
     meetup = [meetup for meetup in meetups if meetup['id'] == meetupId]
 
     # Validate question
-    validate_meetup = QuestionValidator(
-        data['title'],
-        data['body']
-    )
+    try:
+        validate_meetup = QuestionValidator(
+            data['title'],
+            data['body']
+        )
+    except:
+        return jsonify({
+            "error": "You missed a field"
+        })
 
     def errorHandler(error):
         return make_response(jsonify({

@@ -30,25 +30,25 @@ def get_all_meetups():
 def post_a_meetup():
     data = request.get_json()
 
-    # Validate meetup
-    validate_meetup = MeetupValidator(
-        data['topic'],
-        data['description'],
-        data['tags'],
-        data['happeningOn'],
-        data['location']
-    )
-
     meetups = meetup_models.get_items()
 
-    meetup = {
-        "topic": data['topic'],
-        "description": data['description'],
-        "location": data['location'],
-        "happeningOn": data['happeningOn'],
-        "tags": data['tags'],
-        "id": len(meetups), # str(uuid.uuid4()),
-    }
+    # Validate meetup
+
+    try:
+        meetup = {
+            "topic": data['topic'],
+            "description": data['description'],
+            "location": data['location'],
+            "happeningOn": data['happeningOn'],
+            "tags": data['tags'],
+            "id": len(meetups) # str(uuid.uuid4()),
+        }
+    except:
+        return jsonify({
+            "error": "You missed a field"
+        })
+
+    validate_meetup = MeetupValidator(meetup)
 
     def errorHandler(error):
         return make_response(jsonify({
@@ -66,7 +66,7 @@ def post_a_meetup():
     elif validate_meetup.valid_date():
         return errorHandler(validate_meetup.valid_date())
     elif validate_meetup.valid_location():
-        return errorHandler(validate_meetup.valid_location())
+        return errorHandler(validate_meetup.valid_location())  
     elif meetup_models.save_meetup(meetup) == 'No data found':
         return make_response(jsonify({
             "error": 'No data found'
@@ -108,12 +108,17 @@ def post_RSVP(meetupId):
     if meetup:
         
         topic = meetup[0]['topic'].upper()
+        try:
+            rsvp = {
+                "meetup": meetupId,
+                "topic": topic,
+                "status": data['status']
+            }
+        except:
+            return jsonify({
+                "error": "You missed a field"
+            })
 
-        rsvp = {
-            "meetup": meetupId,
-            "topic": topic,
-            "status": data['status']
-        }
 
         def confirm():
             if rsvp['status'] == "yes":

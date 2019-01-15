@@ -6,18 +6,13 @@ from datetime import datetime
 
 class MeetupValidator:
 
-    def __init__(self,
-        title='',
-        description='',
-        tags=[],
-        happeningOn='',
-        location=''
-    ):
-        self.title = title
-        self.tags = tags
-        self.happeningOn = happeningOn
-        self.description = description
-        self.location = location
+    def __init__(self, meetupObj={}):
+        self.title = meetupObj['topic']
+        self.tags = meetupObj['tags']
+        self.happeningOn = meetupObj['happeningOn']
+        self.description = meetupObj['description']
+        self.location = meetupObj['location']
+        self.meetupObj = meetupObj
 
     def data_exists(self):
         if not self.title or not self.happeningOn or not self.description or not self.location:

@@ -49,9 +49,9 @@ class Question(Meetup):
         questions = self.base_model.get_items()
         question = [que for que in questions if que['id'] == questionId]
 
-        if question:
+        try:
             question[0]['votes'] += 1
-        else:
+        except:
             self.errorHandler('Question not found or does\'nt exist')
 
     # downvote question

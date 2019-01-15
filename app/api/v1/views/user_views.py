@@ -3,18 +3,18 @@ This module defines all the user endpoints
 """
 
 from flask import request, jsonify, make_response, Blueprint
-from app.api.v1.utils.validators import Validator
-from app.api.v1.models.user_model import UserModel
+from app.api.v1.utils.validators import UserValidator
+from app.api.v1.models.user import User
 import uuid
 
 v1 = Blueprint('userv1', __name__, url_prefix='/api/v1/')
 
-user_model = UserModel('user_db')
+user = User('user_db')
 
 """ This route fetches all users """
 @v1.route("/users")
 def get():
-    users = user_model.get_items()
+    users = user.get_items()
 
     return make_response(jsonify({
         "status": 200,
@@ -25,10 +25,10 @@ def get():
 @v1.route("/auth/signup", methods=['POST'])
 def registration():
     data = request.get_json()
-    meetups = user_model.get_items()
+    meetups = user.get_items()
 
     # Validate user
-    user1 = Validator(
+    validate_user = UserValidator(
         data['first_name'],
         data['last_name'],
         data['username'],
@@ -37,14 +37,14 @@ def registration():
         data['confirm_password']
     )
 
-    user1.data_exists()
-    user1.valid_name()
-    user1.valid_email()
-    user1.valid_password()
-    user1.matching_password()
+    validate_user.data_exists()
+    validate_user.valid_name()
+    validate_user.valid_email()
+    validate_user.valid_password()
+    validate_user.matching_password()
     
     # Register user
-    user_item = {
+    user_data = {
         "id": len(meetups), # str(uuid.uuid4()),
         "first_name": data['first_name'],
         "last_name": data['last_name'],
@@ -55,13 +55,22 @@ def registration():
         "password": data['password'],
     }
 
-    user_model.save_user(user_item)
+    if user.save_user(user_data) == 'This email already exists':
+        return make_response(jsonify({
+            "error": 'This email already exists'
+        }), 409)
+    elif user.save_user(user_data) == 'This username is already taken':
+        return make_response(jsonify({
+            "error": 'This username is already taken'
+        }), 409)
+    else:
+        user.save_user(user_data)
 
-    return make_response(jsonify({
-        "status": "ok",
-        "message": "{} registered successfully".format(data['email']),
-        "username": data['username']
-    }), 201)
+        return make_response(jsonify({
+            "status": "ok",
+            "message": "{} registered successfully".format(data['email']),
+            "username": data['username']
+        }), 201)
 
 
 """ This route allows registered users to sign in """
@@ -69,36 +78,21 @@ def registration():
 def login():
     data = request.get_json()
 
-    user1 = Validator(email=data['email'], password=data['password'])
-    user1.valid_email()
-    user1.valid_password()
+    validate_user = UserValidator(email=data['email'], password=data['password'])
+    validate_user.valid_email()
+    validate_user.valid_password()
 
     credentials = {
         "email": data['email'],
         "password": data['password']
     }
 
-    user_model.log_in_user(credentials)
-
-    return jsonify({
-        "status": 201,
-        "message": "{} has been successfully logged in".format(data['email'])
-    }), 201
-
-"""
-{
-    "first_name" : "David",
-    "last_name" : "Mwangi",
-    "othername" : "Dave",
-    "email" : "demo@demo.com",
-    "phoneNumber" : "0729710290",
-    "username" : "Dave",
-    "password": "abc123",
-    "confirm_password": "abc123"
-}
-
-{
-    "email": "demo@demo.com",
-    "password": "password"
-}
-"""
+    if user.log_in_user(credentials) == 'You entered wrong information. Please check your credentials!':
+        return make_response(jsonify({
+            "error": "You entered wrong information. Please check your credentials!"
+        }), 401) # unauthorised
+    else:
+        return jsonify({
+            "status": 201,
+            "message": "{} has been successfully logged in".format(data['email'])
+        }), 201

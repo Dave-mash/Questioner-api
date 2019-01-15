@@ -71,7 +71,8 @@ class TestMeetups(unittest.TestCase):
     def test_meetup_rsvps(self):
         """ This method tests that a user can rsvp on a meeting """
         rsvp = {
-            "id": 0,
+            "meetup": 0,
+            "topic": "PYTHON",
             "status": "yes"
         }
 
@@ -80,10 +81,10 @@ class TestMeetups(unittest.TestCase):
         # tests for existing meetup
         self.post_req()
 
-        meetup = [meetup for meetup in self.db if meetup['id'] == rsvp['id']]
+        meetup = [meetup for meetup in self.db if meetup['id'] == rsvp['meetup']]
 
         payload = self.post_req(path="/api/v1/meetups/0/rsvp", data=rsvp)
-        self.assertEqual(payload.status_code, 200)
+        self.assertEqual(payload.status_code, 201)
         topic = meetup[0]['topic'].upper()
 
         rsvp2 = { "id": 0, "status": "yes" }

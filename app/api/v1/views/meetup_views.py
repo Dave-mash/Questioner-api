@@ -5,15 +5,14 @@ This module defines all the user endpoints
 import uuid
 import datetime
 from flask import request, jsonify, make_response
-from werkzeug.exceptions import NotFound, BadRequest
 
 # local imports
 from flask import request, jsonify, make_response, Blueprint
-from app.api.v1.models.meetup_model import MeetupModel
+from app.api.v1.models.meetup import Meetup
 
 v1 = Blueprint('meetupv1', __name__, url_prefix='/api/v1/')
 
-meetup_models = MeetupModel('meetup_db')
+meetup_models = Meetup('meetup_db')
 
 """ This route performs a get request to fetch all upcoming meetups """
 @v1.route("/meetups/upcoming", methods=['GET'])
@@ -40,19 +39,21 @@ def post_a_meetup():
         "id": len(meetups), # str(uuid.uuid4()),
     }
 
-    meetup_models.save_data(meetup)
-
-    return jsonify({
-        "status": 201,
-        "message": "You have successfully posted a meetup",
-        "data": [{
-            "topic": data['topic'],
-            "location": data['location'],
-            "happeningOn": data['happeningOn'],
-            "tags": data['tags']
-        }],
-        "meetups": meetups
-    }), 201
+    if meetup_models.save_meetup(meetup) == 'No data found':
+        return make_response(jsonify({
+            "error": 'No data found'
+        }), 404)
+    else:
+        return make_response(jsonify({
+            "status": 201,
+            "message": "You have successfully posted a meetup",
+            "data": [{
+                "topic": data['topic'],
+                "location": data['location'],
+                "happeningOn": data['happeningOn'],
+                "tags": data['tags']
+            }],
+        }), 201)
 
 """ This route fetches a specific meetup """
 @v1.route("/meetups/<int:meetupId>", methods=['GET'])
@@ -65,8 +66,10 @@ def get_meetup(meetupId):
             "data": meetup
         }), 200
     else:
-        raise NotFound('Meetup not found!')
-
+        return make_response(jsonify({
+            "error": 'Meetup not found!'
+        }), 404)
+        
 """ This route posts RSVPS on meetups """
 @v1.route("/meetups/<int:meetupId>/rsvp", methods=['POST'])
 def post_RSVP(meetupId):
@@ -75,12 +78,14 @@ def post_RSVP(meetupId):
     meetup = [meetup for meetup in meetups if meetup['id'] == meetupId]
 
     if meetup:
+        
+        topic = meetup[0]['topic'].upper()
+
         rsvp = {
-            "id": meetupId,
+            "meetup": meetupId,
+            "topic": topic,
             "status": data['status']
         }
-        meetup_models.rsvp_meetup(rsvp)
-        topic = meetup[0]['topic'].upper()
 
         def confirm():
             if rsvp['status'] == "yes":
@@ -90,57 +95,18 @@ def post_RSVP(meetupId):
             elif rsvp['status'] == "maybe":
                 return "You have confirmed you might attend the {} meetup".format(topic)
             else:
-                raise BadRequest('choose: YES, NO, MAYBE to RSVP')
+                return make_response(jsonify({
+                    "error": 'type: YES, NO, MAYBE to RSVP'
+                }), 404)
 
+            meetup_models.rsvp_meetup(meetupId, topic)
+                    
         return jsonify({
             "status": 200,
             "message": confirm(),
             "data": rsvp
-        }), 200
+        }), 201
     else:
-        raise NotFound('Meetup not found or doesn\'nt exist')
-
-# """ This route upvotes a question """
-# @v1.route("/questions/<int:questionId>/upvote", methods=['PATCH'])
-# def upvote_question(questionId):
-#     data = request.get_json()
-
-#     return jsonify({
-#         "status": 201,
-#         "message": "You have upvoted this question",
-#         "data": [{
-#             "meetup": "{}".format(questionId),
-#             # "title": data['title'],
-#             # "body": data['body'],
-#             "votes": "{}".format(data['votes'])
-#         }]
-#     }), 201
-
-# """ This route downvotes a question """
-# @v1.route("/questions/<int:questionId>/downvote", methods=['PATCH'])
-# def downvote_question(questionId):
-#     data = request.get_json()
-
-#     return jsonify({
-#         "status": 201,
-#         "message": "You have downvoted this question",
-#         "data": [{
-#             "meetup": "{}".format(questionId),
-#             # "title": data['title'],
-#             # "body": data['body'],
-#             "votes": "{}".format(data['votes'])
-#         }]
-#     }), 201
-
-"""
-meetup = {
-    "topic": "a meetup",
-    "description": "this is a meetup",
-    "location": "Nairobi",
-    "happeningOn": "12/12/2019",
-    "tags": "['Django', 'Flask']"
-}
-rsvp = {
-    "status"
-}
-"""
+        return make_response(jsonify({
+            "error": 'Meetup not found or doesn\'nt exist'
+        }), 404)

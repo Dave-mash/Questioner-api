@@ -50,11 +50,10 @@ class TestUser(unittest.TestCase):
 
     #     self.user_list = []
     #     payload = self.post_req(data=self.user)
-    #     self.assertEqual(len(self.user_list), 1)
 
     #     self.assertEqual(payload.status_code, 201) # Created
-        # self.assertEqual(self.user['username'], payload.json['username'])
-        # self.assertEqual(payload.json['message'], "{} registered successfully".format(self.user['email']))
+    #     self.assertEqual(self.user['username'], payload.json['username'])
+    #     self.assertEqual(payload.json['message'], "{} registered successfully".format(self.user['email']))
 
     def test_get_all_users(self):
         """ Test that all users can be fetched """

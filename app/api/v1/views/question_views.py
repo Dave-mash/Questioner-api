@@ -10,6 +10,7 @@ from flask import request, jsonify, make_response, Blueprint
 from app.api.v1.models.meetup import Meetup
 from app.api.v1.models.question import Question
 from app.api.v1.models.user import User
+from app.api.v1.utils.validators import QuestionValidator
 
 v1 = Blueprint('questionv1', __name__, url_prefix='/api/v1/')
 
@@ -18,18 +19,36 @@ question_model = Question('question_db')
 user_model = User('user_db')
 
 """ This route creates a question """
-@v1.route("/<int:meetupId>/questions/", methods=['POST'])
-def create_question(meetupId):
+@v1.route("/<int:meetupId>/questions/<int:userId>", methods=['POST'])
+def create_question(meetupId, userId):
     data = request.get_json()
+
     meetups = meetup_model.get_items()
     meetup = [meetup for meetup in meetups if meetup['id'] == meetupId]
 
-    if meetup:
+    # Validate question
+    validate_meetup = QuestionValidator(
+        data['title'],
+        data['body']
+    )
+
+    def errorHandler(error):
+        return make_response(jsonify({
+            "error": error
+        }), 422) 
+
+    if validate_meetup.data_exists():
+        return errorHandler(validate_meetup.data_exists())
+    elif validate_meetup.valid_topic():
+        return errorHandler(validate_meetup.valid_topic())
+    elif validate_meetup.valid_description():
+        return errorHandler(validate_meetup.valid_description())
+    elif meetup:
         question = {
             "id": len(meetups),
             "meetup_id": meetupId,
             "createdOn": datetime.now(),
-            "createdBy": data['createdBy'], # user_id
+            "createdBy": userId, # user_id
             "title": data['title'],
             "body": data['body'],
             "votes": 0
@@ -41,17 +60,16 @@ def create_question(meetupId):
             }), 404)
         else:
             question_model.save_question(question)
-    else:
+            return jsonify({
+                "status": 201,
+                "message": "You have successfully posted a question on {} meetup".format(meetup[0]['topic']),
+                "data": [question],
+                "question": question_model.get_items()
+            }), 201
+    elif not meetup:
         return make_response(jsonify({
             "error": "No meetup found"
         }), 404)
-
-    return jsonify({
-        "status": 201,
-        "message": "You have successfully posted a question on {} meetup".format(meetup[0]['topic']),
-        "data": [question],
-        "question": question_model.get_items()
-    }), 201
 
 """ This route upvotes a question """
 @v1.route("/questions/<int:questionId>/upvote", methods=['PATCH'])

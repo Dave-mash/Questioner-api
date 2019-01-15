@@ -37,40 +37,45 @@ def registration():
         data['confirm_password']
     )
 
-    validate_user.data_exists()
-    validate_user.valid_name()
-    validate_user.valid_email()
-    validate_user.valid_password()
-    validate_user.matching_password()
-    
-    # Register user
-    user_data = {
-        "id": len(meetups), # str(uuid.uuid4()),
-        "first_name": data['first_name'],
-        "last_name": data['last_name'],
-        "othername": data['othername'],
-        "email": data['email'],
-        "phoneNumber": data['phoneNumber'],
-        "username": data['username'],
-        "password": data['password'],
-    }
+    if validate_user.data_exists():
+        return validate_user.data_exists()
+    elif validate_user.valid_name():
+        return validate_user.valid_name()
+    elif validate_user.valid_email():
+        return validate_user.valid_email()
+    elif validate_user.valid_password():
+        return validate_user.valid_password()
+    elif validate_user.matching_password():
+        return validate_user.matching_password()
+    else:    
+        # Register user
+        user_data = {
+            "id": len(meetups), # str(uuid.uuid4()),
+            "first_name": data['first_name'],
+            "last_name": data['last_name'],
+            "othername": data['othername'],
+            "email": data['email'],
+            "phoneNumber": data['phoneNumber'],
+            "username": data['username'],
+            "password": data['password'],
+        }
 
-    if user.save_user(user_data) == 'This email already exists':
-        return make_response(jsonify({
-            "error": 'This email already exists'
-        }), 409)
-    elif user.save_user(user_data) == 'This username is already taken':
-        return make_response(jsonify({
-            "error": 'This username is already taken'
-        }), 409)
-    else:
-        user.save_user(user_data)
+        if user.save_user(user_data) == 'This email already exists':
+            return make_response(jsonify({
+                "error": 'This email already exists'
+            }), 409)
+        elif user.save_user(user_data) == 'This username is already taken':
+            return make_response(jsonify({
+                "error": 'This username is already taken'
+            }), 409)
+        else:
+            user.save_user(user_data)
 
-        return make_response(jsonify({
-            "status": "ok",
-            "message": "{} registered successfully".format(data['email']),
-            "username": data['username']
-        }), 201)
+            return make_response(jsonify({
+                "status": "ok",
+                "message": "{} registered successfully".format(data['email']),
+                "username": data['username']
+            }), 201)
 
 
 """ This route allows registered users to sign in """

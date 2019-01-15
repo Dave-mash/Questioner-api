@@ -7,6 +7,7 @@ import datetime
 from flask import request, jsonify, make_response
 
 # local imports
+from app.api.v1.utils.validators import MeetupValidator
 from flask import request, jsonify, make_response, Blueprint
 from app.api.v1.models.meetup import Meetup
 
@@ -28,6 +29,16 @@ def get_all_meetups():
 @v1.route("/meetups/", methods=['POST'])
 def post_a_meetup():
     data = request.get_json()
+
+    # Validate meetup
+    validate_meetup = MeetupValidator(
+        data['topic'],
+        data['description'],
+        data['tags'],
+        data['happeningOn'],
+        data['location']
+    )
+
     meetups = meetup_models.get_items()
 
     meetup = {
@@ -39,7 +50,24 @@ def post_a_meetup():
         "id": len(meetups), # str(uuid.uuid4()),
     }
 
-    if meetup_models.save_meetup(meetup) == 'No data found':
+    def errorHandler(error):
+        return make_response(jsonify({
+            "error": error
+        }), 422) 
+    
+    if validate_meetup.data_exists():
+        return errorHandler(validate_meetup.data_exists())
+    elif validate_meetup.valid_topic():
+        return errorHandler(validate_meetup.valid_topic())
+    elif validate_meetup.valid_description():
+        return errorHandler(validate_meetup.valid_description())
+    elif validate_meetup.valid_tags():
+        return errorHandler(validate_meetup.valid_tags())
+    elif validate_meetup.valid_date():
+        return errorHandler(validate_meetup.valid_date())
+    elif validate_meetup.valid_location():
+        return errorHandler(validate_meetup.valid_location())
+    elif meetup_models.save_meetup(meetup) == 'No data found':
         return make_response(jsonify({
             "error": 'No data found'
         }), 404)
@@ -51,7 +79,8 @@ def post_a_meetup():
                 "topic": data['topic'],
                 "location": data['location'],
                 "happeningOn": data['happeningOn'],
-                "tags": data['tags']
+                "tags": data['tags'],
+                "err": validate_meetup.valid_description()
             }],
         }), 201)
 

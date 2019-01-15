@@ -29,18 +29,16 @@ class Meetup(Base):
 
     # Update meetup
     def update_meetup(self, updates, meetup_id):
-        try:
-            if updates and meetup_id:
-                self.base_model.update_data(meetup_id, updates)
-        except:
+        if updates and meetup_id:
+            self.base_model.update_data(meetup_id, updates)
+        else:
             self.errorHandler('No data found')
 
     # Delete meetup
     def del_meetup(self, meetup_id):
-        try:
-            if meetup_id:
-                self.base_model.delete_data(meetup_id)
-        except:
+        if meetup_id:
+            self.base_model.delete_data(meetup_id)
+        else:
             self.errorHandler('No data found')
 
     # RSVP meetup

@@ -37,16 +37,21 @@ def registration():
         data['confirm_password']
     )
 
+    def errorHandler(error):
+        return make_response(jsonify({
+            "error": error
+        }), 422) 
+    
     if validate_user.data_exists():
-        return validate_user.data_exists()
+        return errorHandler(validate_user.data_exists())
     elif validate_user.valid_name():
-        return validate_user.valid_name()
+        return errorHandler(validate_user.valid_name())
     elif validate_user.valid_email():
-        return validate_user.valid_email()
+        return errorHandler(validate_user.valid_email())
     elif validate_user.valid_password():
-        return validate_user.valid_password()
+        return errorHandler(validate_user.valid_password())
     elif validate_user.matching_password():
-        return validate_user.matching_password()
+        return errorHandler(validate_user.matching_password())
     else:    
         # Register user
         user_data = {

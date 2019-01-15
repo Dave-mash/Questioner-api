@@ -92,8 +92,6 @@ class MeetupValidator:
     def valid_description(self):
         if len(self.description) < 5:
             return 'Your description is too short'
-        elif len(self.description) > 30:
-            return 'Your description is too long'
 
     def valid_tags(self):
         if len(self.tags) == 0:
@@ -120,7 +118,7 @@ class QuestionValidator(MeetupValidator):
             return 'You missed a required field'
 
     def valid_title(self):
-        if len(self.title) < 10 and len(self.description) < 3:
+        if len(self.title) < 10:
             return 'Your question is too short. Try being abit more descriptive'
 
 # Access valid_description from MeetupValidator

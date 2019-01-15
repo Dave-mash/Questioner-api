@@ -69,39 +69,34 @@ class TestUser(unittest.TestCase):
         user = { **self.user }
         user['email'] = 'davegmail.com'
         payload = self.post_req(data=user)
-        self.assertEqual(payload.status_code, 400)
-        # assert text_type(invalid_email) == "<BadRequest '400: Invalid email address!'>"
+        self.assertEqual(payload.status_code, 422)
         
         # Short username
         user2 = { **self.user }
         user2['username'] = 'D'
         payload = self.post_req(data=user2)
-        self.assertEqual(payload.status_code, 400)
-        # self.assertEqual(payload.json['Error'], "Your username is too short!")
+        self.assertEqual(payload.status_code, 422)
 
         # Weak password
         user3 = { **self.user }
         user3['password'] = 'ab'
         user3['confirm_password'] = 'ab'
         payload = self.post_req(data=user3)
-        self.assertEqual(payload.status_code, 400)
-        # self.assertEqual(payload.json['Error'], "Weak password!")
+        self.assertEqual(payload.status_code, 422)
 
         # Unmatching passwords
         user4 = { **self.user }
         user4['password'] = 'abc123'
         user4['confirm_password'] = 'abc'
         payload = self.post_req(data=user4)
-        self.assertEqual(payload.status_code, 400)
-        # self.assertEqual(payload.json['Error'], "Your passwords don\'t match")
+        self.assertEqual(payload.status_code, 422)
         
         # Missed field
         user5 = { **self.user }
         user5['username'] = ''
         payload = self.post_req(data=user5)
-        self.assertEqual(payload.status_code, 400)
+        self.assertEqual(payload.status_code, 422)
         user4['confirm_password'] = 'abc'
-        # self.assertEqual(payload.json['Error'], {}. This field is required!'.format(key))
 
     def test_sign_up_user_existing_account(self):
         """ Test that registering with an already taken username or email, will throw an error """

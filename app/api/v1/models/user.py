@@ -52,23 +52,6 @@ class User(Base):
         if not exists_email or not match_pass:
             return self.errorHandler('You entered wrong information. Please check your credentials!')
 
-
-    # Edit data
-    def edit_user(self, updates, user_id):
-        try:
-            if updates and user_id:
-                self.base_model.update_data(user_id, updates)
-        except:
-            return self.errorHandler('No data found')
-
-    # Delete data
-    def del_user(self, user_id):
-        try:
-            if user_id:
-                self.base_model.delete_data(user_id)
-        except:
-            return self.errorHandler('No data found')
-
     # Fetch users
     def get_users(self):
         self.base_model.get_items()

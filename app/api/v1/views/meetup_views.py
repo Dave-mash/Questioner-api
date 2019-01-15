@@ -80,7 +80,6 @@ def post_a_meetup():
                 "location": data['location'],
                 "happeningOn": data['happeningOn'],
                 "tags": data['tags'],
-                "err": validate_meetup.valid_description()
             }],
         }), 201)
 

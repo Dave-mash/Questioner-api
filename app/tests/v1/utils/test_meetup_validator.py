@@ -18,23 +18,35 @@ class TestQuestionsValidator(unittest.TestCase):
         }
 
     def test_meetup_data_exists(self):
-        question = MeetupValidator('', '')
+        meetup = { **self.meetup }
+        meetup['topic'] = ''
+        meetup['description'] = ''
+        question = MeetupValidator(meetup)
         self.assertEqual(question.data_exists(), 'You missed a required field')  
 
     def test_invalid_data(self):
-        question = MeetupValidator('b', 'This is python')
-        self.assertEqual(question.valid_topic(), 'Your topic is too short!')
-        question = MeetupValidator('This is a long line of text testing whether this field should be less than 30 characters', 'This is python')
-        self.assertEqual(question.valid_topic(), 'Your topic is too long!')
 
-        question = MeetupValidator('Python', 'T')
+        meetup = { **self.meetup }
+        meetup['topic'] = 'b'
+        question = MeetupValidator(meetup)
+        self.assertEqual(question.valid_topic(), 'Your topic is too short!')
+
+        meetup = { **self.meetup }
+        meetup['description'] = 'T'
+        question = MeetupValidator(meetup)
         self.assertEqual(question.valid_description(), 'Your description is too short')
 
-        question = MeetupValidator('Python', 'This is a meetup')
+        meetup = { **self.meetup }
+        meetup['tags'] = []
+        question = MeetupValidator(meetup)
         self.assertEqual(question.valid_tags(), 'Have at least one tag')
 
-        question = MeetupValidator('Python', 'This is a meetup', ['Django', 'Flask'], '12/12/2019')
+        meetup = { **self.meetup }
+        meetup['happeningOn'] = '12/12/2019'
+        question = MeetupValidator(meetup)
         self.assertEqual(question.valid_date(), 'Date format should be YYYY-MM-DD')
 
-        question = MeetupValidator('Python', 'This is a meetup', ['Django', 'Flask'], '12-12-2019', 'N')
+        meetup = { **self.meetup }
+        meetup['location'] = 'N'
+        question = MeetupValidator(meetup)
         self.assertEqual(question.valid_location(), 'Enter a valid location!')

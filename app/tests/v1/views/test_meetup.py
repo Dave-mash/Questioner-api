@@ -15,11 +15,11 @@ class TestMeetups(unittest.TestCase):
         self.app = create_app('testing')
         self.client = self.app.test_client()
         self.meetup = {
-            "happeningOn" : "12/12/2018",
+            "happeningOn" : "12-12-2018",
             "location" : "Nairobi",
             "tags": ["Machine learning", "Neural networks"],
             "topic": "Python data structures",
-            "description": "Deep dive into python programming",
+            "description": "Deep dive into python",
         }
 
     def post_req(self, path='api/v1/meetups', data={}):
@@ -53,6 +53,44 @@ class TestMeetups(unittest.TestCase):
         self.assertEqual(payload.status_code, 201)
         self.assertEqual(payload.json['message'], "You have successfully posted a meetup")
 
+    def test_create_meetup_invalid_input(self):
+
+        # Invalid description
+        meetup = { **self.meetup }
+        meetup['description'] = 'py'
+        payload = self.post_req(data=meetup)
+        self.assertEqual(payload.status_code, 422)
+
+        # None-existing data
+        meetup = { **self.meetup }
+        meetup['description'] = ''
+        payload = self.post_req(data=meetup)
+        self.assertEqual(payload.status_code, 422)
+        
+        # Invalid topic
+        meetup = { **self.meetup }
+        meetup['topic'] = 'p'
+        payload = self.post_req(data=meetup)
+        self.assertEqual(payload.status_code, 422)
+        
+        # Invalid tags
+        meetup = { **self.meetup }
+        meetup['tags'] = []
+        payload = self.post_req(data=meetup)
+        self.assertEqual(payload.status_code, 422)
+        
+        # Invalid date
+        meetup = { **self.meetup }
+        meetup['happeningOn'] = '2018/12/12'
+        payload = self.post_req(data=meetup)
+        self.assertEqual(payload.status_code, 422)
+        
+        # Invalid location
+        meetup = { **self.meetup }
+        meetup['location'] = 'na'
+        payload = self.post_req(data=meetup)
+        self.assertEqual(payload.status_code, 422)
+        
     def test_fetch_specific_meetup(self):
         """ Test that a user can fetch specific meetup """
         self.db = []
@@ -71,7 +109,8 @@ class TestMeetups(unittest.TestCase):
     def test_meetup_rsvps(self):
         """ This method tests that a user can rsvp on a meeting """
         rsvp = {
-            "id": 0,
+            "meetup": 0,
+            "topic": "PYTHON",
             "status": "yes"
         }
 
@@ -80,10 +119,10 @@ class TestMeetups(unittest.TestCase):
         # tests for existing meetup
         self.post_req()
 
-        meetup = [meetup for meetup in self.db if meetup['id'] == rsvp['id']]
+        meetup = [meetup for meetup in self.db if meetup['id'] == rsvp['meetup']]
 
         payload = self.post_req(path="/api/v1/meetups/0/rsvp", data=rsvp)
-        self.assertEqual(payload.status_code, 200)
+        self.assertEqual(payload.status_code, 201)
         topic = meetup[0]['topic'].upper()
 
         rsvp2 = { "id": 0, "status": "yes" }

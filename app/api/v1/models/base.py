@@ -2,29 +2,24 @@
 This module defines the base model class and all it's methods
 """
 
-from werkzeug.exceptions import BadRequest
+users_db = []
+meetups_db = []
+questions_db = []
 
-user_db = []
-meetup_db = []
-question_db = []
+class Base:
 
-class BaseModel:
-
-    def __init__(self, db_name=None):
-        if not db_name:
-            raise BadRequest('No db name provided')
-        else:
-            self.db_name = db_name
+    def __init__(self, db_name=[]):
+        self.db_name = db_name
 
     def check_db(self):
         try:
             if isinstance(self.db_name, str):
                 if self.db_name == "user_db":
-                    self.db = user_db
+                    self.db = users_db
                 elif self.db_name == "meetup_db":
-                    self.db = meetup_db
+                    self.db = meetups_db
                 elif self.db_name == "question_db":
-                    self.db = question_db
+                    self.db = questions_db
         except ValueError:
             return 'db name must be a string'
 
@@ -56,5 +51,5 @@ class BaseModel:
         item = [item for item in self.db if item_id == item.id]
         del item
 
-    def check_class(self):
-        return __class__.__name__
+    def errorHandler(self, error):
+        return error

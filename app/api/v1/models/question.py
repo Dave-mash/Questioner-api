@@ -2,17 +2,16 @@
 This module defines the question model class and all it's methods
 """
 
-from werkzeug.exceptions import BadRequest, NotFound
 from datetime import datetime
 import uuid
 
-from app.api.v1.models.meetup_model import MeetupModel
-from app.api.v1.models.base_model import BaseModel
+from app.api.v1.models.meetup import Meetup
+from app.api.v1.models.base import Base
 
-class QuestionModel(MeetupModel):
+class Question(Meetup):
     """ add a question to the database """
 
-    base_model = BaseModel("question_db")
+    base_model = Base("question_db")
 
     # Save data
     def save_question(self, question_item):
@@ -27,7 +26,7 @@ class QuestionModel(MeetupModel):
             }
             self.base_model.save_data(question)
         else:
-            raise BadRequest('No data found')
+            self.errorHandler('No data found')
 
     # Edit data
     def edit_question(self, updates, question_id):
@@ -35,7 +34,7 @@ class QuestionModel(MeetupModel):
             if updates and question_id:
                 self.base_model.update_data(question_id, updates)
         except:
-            raise BadRequest('No data found')
+            self.errorHandler('No data found')
 
     # Delete data
     def del_question(self, question_id):
@@ -43,7 +42,7 @@ class QuestionModel(MeetupModel):
             if question_id:
                 self.base_model.delete_data(question_id)
         except:
-            raise BadRequest('No data found')
+            self.errorHandler('No data found')
 
     # upvote question
     def upvote_question(self, questionId):
@@ -53,7 +52,7 @@ class QuestionModel(MeetupModel):
         if question:
             question[0]['votes'] += 1
         else:
-            raise NotFound('Question not found or does\'nt exist')
+            self.errorHandler('Question not found or does\'nt exist')
 
     # downvote question
     def downvote_question(self, questionId):
@@ -63,5 +62,6 @@ class QuestionModel(MeetupModel):
         if question:
             question[0]['votes'] -= 1
         else:
-            raise NotFound('Question not found or does\'nt exist')
+            self.errorHandler('Question not found or does\'nt exist')
+            
 

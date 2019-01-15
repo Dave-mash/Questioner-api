@@ -2,17 +2,16 @@
 This module defines the user model class and all it's methods
 """
 
-from werkzeug.exceptions import BadRequest, Conflict, NotFound
 from werkzeug.security import generate_password_hash
 from datetime import datetime
 import uuid
 
-from app.api.v1.models.base_model import BaseModel
+from app.api.v1.models.base import Base
 
-class UserModel(BaseModel):
+class User(Base):
     """ add user a user to a database """
 
-    base_model = BaseModel("user_db")
+    base_model = Base("user_db")
 
     # Save data
     def save_user(self, user_item):
@@ -27,9 +26,7 @@ class UserModel(BaseModel):
                 "dateRegistered": str(datetime.today()),
                 "password": user_item['password'],
                 "isAdmin": False,
-                "rsvps": {
-                    "going": []
-                }
+                "rsvps": []
             }
             
             # Check for duplicate email and username
@@ -38,11 +35,11 @@ class UserModel(BaseModel):
             dup_username = [users for users in db if users['username'] == user_item['username']]
             
             if dup_email:
-                raise Conflict('This email already exists')
+                return self.errorHandler('This email already exists')
             elif dup_username:
-                raise Conflict('This username is already taken')
+                return self.errorHandler('This username is already taken')
             else:
-                self.base_model.save_data(user)
+                return self.base_model.save_data(user)
 
     # Log in user
     def log_in_user(self, details):
@@ -53,24 +50,7 @@ class UserModel(BaseModel):
         match_pass = [p_word for p_word in db if p_word['password'] == details['password']]
 
         if not exists_email or not match_pass:
-            raise NotFound('You entered wrong information. Please check your credentials!')
-
-
-    # Edit data
-    def edit_user(self, updates, user_id):
-        try:
-            if updates and user_id:
-                self.base_model.update_data(user_id, updates)
-        except:
-            raise BadRequest('No data found')
-
-    # Delete data
-    def del_user(self, user_id):
-        try:
-            if user_id:
-                self.base_model.delete_data(user_id)
-        except:
-            raise BadRequest('No data found')
+            return self.errorHandler('You entered wrong information. Please check your credentials!')
 
     # Fetch users
     def get_users(self):

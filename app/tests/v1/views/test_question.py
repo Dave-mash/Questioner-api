@@ -55,12 +55,34 @@ class TestQuestions(unittest.TestCase):
         self.db = []
         self.post_req()
         question = [que for que in self.db if que['meetup_id'] == 0]
-        payload = self.post_req(path='api/v1/0/questions', data=question[0])
+        payload = self.post_req(path='api/v1/0/questions/0', data=question[0])
         self.assertEqual(payload.status_code, 201)
 
         question2 = [que for que in self.db if que['meetup_id'] == 0]
         payload = self.post_req(path='api/v1/5/questions', data=question2[0])
         self.assertEqual(payload.status_code, 404)
+
+    def test_create_question_invalid_input(self):
+        """ Test that a can't post a question with invalid input """
+
+        # Non-existing data
+        question = { **self.question }
+        question['title'] = ''
+        payload = self.post_req(path='api/v1/0/questions/0', data=question)
+        self.assertEqual(payload.status_code, 422)
+
+        # Invalid description
+        question2 = { **self.question }
+        question2['body'] = ''
+        payload = self.post_req(path='api/v1/0/questions/0', data=question2)
+        self.assertEqual(payload.status_code, 422)
+        
+        # Invalid description
+        question2 = { **self.question }
+        question2['body'] = 'r'
+        payload = self.post_req(path='api/v1/0/questions/0', data=question2)
+        self.assertEqual(payload.status_code, 422)
+        
 
     # def test_upvote_question(self):
     #     """ Test that a user can upvote a question """
@@ -72,7 +94,7 @@ class TestQuestions(unittest.TestCase):
     # def test_downvote_question(self):
     #     """ Test that a user can downvote a question """
 
-    #     payload = self.client.patch('api/v1/questions/1/downvote')
+    #     payload = self.client.patch('api/v1/questions/0/downvote')
     #     self.assertEqual(payload.status_code, 200)
         
     def tearDown(self):

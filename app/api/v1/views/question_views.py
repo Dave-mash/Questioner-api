@@ -10,7 +10,7 @@ from flask import request, jsonify, make_response, Blueprint
 from app.api.v1.models.meetup import Meetup
 from app.api.v1.models.question import Question
 from app.api.v1.models.user import User
-from app.api.v1.utils.validators import QuestionValidator
+from app.api.v1.utils.question_validators import QuestionValidator
 
 v1 = Blueprint('questionv1', __name__, url_prefix='/api/v1/')
 
@@ -78,12 +78,12 @@ def upvote_question(questionId):
     questions = question_model.get_items()
     question = [que for que in questions if que['id'] == questionId]
 
-    if question_model.upvote_question(questionId) == 'Question not found or does\'nt exist':
+    if question_model.upvotes(questionId) == 'Question not found or does\'nt exist':
         return make_response(jsonify({
             "error": "Question not found or does\'nt exist"
         }), 404)
     else:
-        question_model.upvote_question(questionId)
+        question_model.upvotes(questionId)
         
     if question:
         return make_response(jsonify({
@@ -108,12 +108,12 @@ def downvote_question(questionId):
     questions = question_model.get_items()
     question = [que for que in questions if que['id'] == questionId]
 
-    if question_model.downvote_question(questionId) == 'Question not found or does\'nt exist':
+    if question_model.downvotes(questionId) == 'Question not found or does\'nt exist':
         return make_response(jsonify({
             "error": "Question not found or does\'nt exist"
         }), 404)
     else:
-        question_model.downvote_question(questionId)
+        question_model.downvotes(questionId)
         
     if question:
         return make_response(jsonify({

@@ -7,7 +7,7 @@ import datetime
 from flask import request, jsonify, make_response
 
 # local imports
-from app.api.v1.utils.validators import MeetupValidator
+from app.api.v1.utils.meetup_validators import MeetupValidator
 from flask import request, jsonify, make_response, Blueprint
 from app.api.v1.models.meetup import Meetup
 

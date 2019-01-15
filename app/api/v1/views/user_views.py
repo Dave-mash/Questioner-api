@@ -3,7 +3,7 @@ This module defines all the user endpoints
 """
 
 from flask import request, jsonify, make_response, Blueprint
-from app.api.v1.utils.validators import UserValidator
+from app.api.v1.utils.user_validators import UserValidator
 from app.api.v1.models.user import User
 import uuid
 

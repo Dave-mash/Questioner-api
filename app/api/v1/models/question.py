@@ -45,7 +45,7 @@ class Question(Meetup):
             self.errorHandler('No data found')
 
     # upvote question
-    def upvote_question(self, questionId):
+    def upvotes(self, questionId):
         questions = self.base_model.get_items()
         question = [que for que in questions if que['id'] == questionId]
 
@@ -55,7 +55,7 @@ class Question(Meetup):
             self.errorHandler('Question not found or does\'nt exist')
 
     # downvote question
-    def downvote_question(self, questionId):
+    def downvotes(self, questionId):
         questions = self.base_model.get_items()
         question = [que for que in questions if que['id'] == questionId]
 

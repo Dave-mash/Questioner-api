@@ -50,15 +50,15 @@ class UserValidator:
                 return base_model.errorHandler('Your username is too long!')
 
     def valid_email(self):
-        regex = re.compile(r"^[A-Za-z0-9\.\+_-]+@[A-Za-z0-9\._-]+\.[a-zA-Z]*$")
+        reg_email = re.compile(r"^[A-Za-z0-9\.\+_-]+@[A-Za-z0-9\._-]+\.[a-zA-Z]*$")
         
-        if not re.match(regex, self.email):
+        if not re.match(reg_email, self.email):
             return base_model.errorHandler('Invalid email address!')
 
-    def valid_password(self):
-        regex = re.compile(r'[a-zA-Z0-9@_+-.]{3,}$')
+    def validate_password(self):
+        reg_password = re.compile(r'[a-zA-Z0-9@_+-.]{3,}$')
 
-        if not re.match(regex, self.password):
+        if not re.match(reg_password, self.password):
             return base_model.errorHandler('Weak password!')
 
     def matching_password(self):

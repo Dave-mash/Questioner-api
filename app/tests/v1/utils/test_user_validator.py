@@ -34,7 +34,7 @@ class TestQuestionsValidator(unittest.TestCase):
         self.assertEqual(user.valid_email(), 'Invalid email address!')
 
         user = UserValidator('Dave', 'Mash', 'username', 'email@demo.com', 'q')
-        self.assertEqual(user.valid_password(), 'Weak password!')
+        self.assertEqual(user.validate_password(), 'Weak password!')
 
         user = UserValidator('Dave', 'Mash', 'username', 'email@demo.com', 'abc123', 'abc')
         self.assertEqual(user.matching_password(), 'Your passwords don\'t match')

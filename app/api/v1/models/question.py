@@ -28,14 +28,6 @@ class Question(Meetup):
         else:
             self.errorHandler('No data found')
 
-    # Edit data
-    def edit_question(self, updates, question_id):
-        try:
-            if updates and question_id:
-                self.base_model.update_data(question_id, updates)
-        except:
-            self.errorHandler('No data found')
-
     # Delete data
     def del_question(self, question_id):
         try:

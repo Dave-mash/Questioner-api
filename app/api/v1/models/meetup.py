@@ -10,13 +10,14 @@ class Meetup(Base):
     """ add a meetup to the database """
 
     base_model = Base("meetup_db")
+    now = datetime.now()
 
     # Save meetup
     def save_meetup(self, meetup_item):
         if meetup_item:
             meetup = {
                 "id": meetup_item['id'],
-                "createdOn": datetime.now(),
+                "createdOn": self.now,
                 "topic": meetup_item['topic'],
                 "description": meetup_item['description'],
                 "location": meetup_item['location'],

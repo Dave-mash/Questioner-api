@@ -44,9 +44,3 @@ class TestBaseModelClass(unittest.TestCase):
         base = Base('meetups_db')
         self.assertEqual(base.db_name, 'meetups_db')
 
-    # def test_get_data(self):
-    #     base = Base('users_db')
-    #     base.save_data(self.user)
-
-    #     users = base.get_items()
-        # self.assertEqual(len(users), 1)

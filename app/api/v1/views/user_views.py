@@ -53,8 +53,8 @@ def registration():
         return errorHandler(validate_user.valid_name())
     elif validate_user.valid_email():
         return errorHandler(validate_user.valid_email())
-    elif validate_user.valid_password():
-        return errorHandler(validate_user.valid_password())
+    elif validate_user.validate_password():
+        return errorHandler(validate_user.validate_password())
     elif validate_user.matching_password():
         return errorHandler(validate_user.matching_password())
     else:    
@@ -96,7 +96,7 @@ def login():
     try:
         validate_user = UserValidator(email=data['email'], password=data['password'])
         validate_user.valid_email()
-        validate_user.valid_password()
+        validate_user.validate_password()
 
         credentials = {
             "email": data['email'],

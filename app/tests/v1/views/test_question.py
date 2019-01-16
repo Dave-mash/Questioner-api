@@ -83,20 +83,6 @@ class TestQuestions(unittest.TestCase):
         payload = self.post_req(path='api/v1/0/questions/0', data=question2)
         self.assertEqual(payload.status_code, 422)
         
-
-    # def test_upvote_question(self):
-    #     """ Test that a user can upvote a question """
-    #     self.post_req(path='api/v1/meetups', data=self.meetup)
-    #     self.post_req()
-    #     payload = self.client.patch('/api/v1/questions/0/upvote')
-    #     self.assertEqual(payload.status_code, 200)
-        
-    # def test_downvote_question(self):
-    #     """ Test that a user can downvote a question """
-
-    #     payload = self.client.patch('api/v1/questions/0/downvote')
-    #     self.assertEqual(payload.status_code, 200)
-        
     def tearDown(self):
         """ This function destroys all objects created during testing """
         self.db = []

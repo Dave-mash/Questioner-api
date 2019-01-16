@@ -45,16 +45,6 @@ class TestUser(unittest.TestCase):
         res = self.client.get(path)
         return res 
 
-    # def test_sign_up_user(self):
-    #     """ Test that an unregistered user can sign up """
-
-    #     self.user_list = []
-    #     payload = self.post_req(data=self.user)
-
-    #     self.assertEqual(payload.status_code, 201) # Created
-    #     self.assertEqual(self.user['username'], payload.json['username'])
-    #     self.assertEqual(payload.json['message'], "{} registered successfully".format(self.user['email']))
-
     def test_get_all_users(self):
         """ Test that all users can be fetched """
 

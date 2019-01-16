@@ -28,14 +28,19 @@ def registration():
     meetups = user.get_items()
 
     # Validate user
-    validate_user = UserValidator(
-        data['first_name'],
-        data['last_name'],
-        data['username'],
-        data['email'],
-        data['password'],
-        data['confirm_password']
-    )
+    try:
+        validate_user = UserValidator(
+            data['first_name'],
+            data['last_name'],
+            data['username'],
+            data['email'],
+            data['password'],
+            data['confirm_password']
+        )
+    except:
+        return jsonify({
+            "error": "You missed a field"
+        })
 
     def errorHandler(error):
         return make_response(jsonify({
@@ -48,8 +53,8 @@ def registration():
         return errorHandler(validate_user.valid_name())
     elif validate_user.valid_email():
         return errorHandler(validate_user.valid_email())
-    elif validate_user.valid_password():
-        return errorHandler(validate_user.valid_password())
+    elif validate_user.validate_password():
+        return errorHandler(validate_user.validate_password())
     elif validate_user.matching_password():
         return errorHandler(validate_user.matching_password())
     else:    
@@ -88,14 +93,19 @@ def registration():
 def login():
     data = request.get_json()
 
-    validate_user = UserValidator(email=data['email'], password=data['password'])
-    validate_user.valid_email()
-    validate_user.valid_password()
+    try:
+        validate_user = UserValidator(email=data['email'], password=data['password'])
+        validate_user.valid_email()
+        validate_user.validate_password()
 
-    credentials = {
-        "email": data['email'],
-        "password": data['password']
-    }
+        credentials = {
+            "email": data['email'],
+            "password": data['password']
+        }
+    except:
+        return jsonify({
+            "error": "You missed a field"
+        })
 
     if user.log_in_user(credentials) == 'You entered wrong information. Please check your credentials!':
         return make_response(jsonify({

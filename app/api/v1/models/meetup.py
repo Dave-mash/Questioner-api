@@ -35,13 +35,6 @@ class Meetup(Base):
         else:
             self.errorHandler('No data found')
 
-    # Delete meetup
-    def del_meetup(self, meetup_id):
-        if meetup_id:
-            self.base_model.delete_data(meetup_id)
-        else:
-            self.errorHandler('No data found')
-
     # RSVP meetup
     def rsvp_meetup(self, id, meetup_title):
 

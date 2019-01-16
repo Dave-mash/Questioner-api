@@ -136,6 +136,7 @@ def downvote_question(questionId):
             "error": "question does not exist"
         }), 404)
 
+""" this route deletes a question """
 @v1.route("/questions/<int:questionId>/delete", methods=['DELETE'])
 def delete_question(questionId):
 

@@ -65,3 +65,7 @@ class UserValidator:
         if self.password != self.confirm_password:
             return base_model.errorHandler('Your passwords don\'t match')
 
+    def valid_phoneNumber(self, number):
+        if not int(number):
+            return 'Use numbers only'
+        

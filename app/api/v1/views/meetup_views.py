@@ -98,6 +98,21 @@ def get_meetup(meetupId):
             "error": 'Meetup not found!'
         }), 404)
         
+""" This route deletes a specific meetup """
+@v1.route("/meetups/<int:meetupId>", methods=['GET'])
+def delete_meetup(meetupId):
+    meetup = meetup_models.get_item_by_id(meetupId)
+
+    if meetup:
+        return jsonify({
+            "status": 200,
+            "data": meetup
+        }), 200
+    else:
+        return make_response(jsonify({
+            "error": 'Meetup not found!'
+        }), 404)
+
 """ This route posts RSVPS on meetups """
 @v1.route("/meetups/<int:meetupId>/rsvp", methods=['POST'])
 def post_RSVP(meetupId):

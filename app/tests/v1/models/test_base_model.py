@@ -43,4 +43,3 @@ class TestBaseModelClass(unittest.TestCase):
 
         base = Base('meetups_db')
         self.assertEqual(base.db_name, 'meetups_db')
-

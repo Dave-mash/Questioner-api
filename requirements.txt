@@ -22,7 +22,7 @@ mccabe==0.6.1
 more-itertools==5.0.0
 pathtools==0.1.2
 pluggy==0.8.1
-py==1.7.0
+py==1.10.0
 pylint==1.9.4
 pytest==4.1.0
 pytest-cov==2.6.1
